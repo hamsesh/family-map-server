@@ -23,7 +23,7 @@ public class Person {
     /**
      * Person's gender (m or f)
      */
-    private char gender;
+    private String gender;
     /**
      * FatherID associated with this person (may be null)
      */
@@ -49,7 +49,7 @@ public class Person {
      * @param spouseID spouseID associated with this person (may be null)
      */
     public Person(String personID, String associatedUsername, String firstName, String lastName,
-                  char gender, String fatherID, String motherID, String spouseID) {
+                  String gender, String fatherID, String motherID, String spouseID) {
         this.personID = personID;
         this.associatedUsername = associatedUsername;
         this.firstName = firstName;
@@ -92,11 +92,11 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -140,12 +140,13 @@ public class Person {
                     oPerson.getAssociatedUsername().equals(getAssociatedUsername()) &&
                     oPerson.getFirstName().equals(getFirstName()) &&
                     oPerson.getLastName().equals(getLastName()) &&
-                    oPerson.getGender() == getGender() &&
+                    oPerson.getGender().equals(getGender()) &&
                     oPerson.getFatherID().equals(getFatherID()) &&
                     oPerson.getMotherID().equals(getMotherID()) &&
                     oPerson.getSpouseID().equals(getSpouseID());
 
-        } else {
+        }
+        else {
             return false;
         }
     }

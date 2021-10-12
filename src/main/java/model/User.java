@@ -5,10 +5,6 @@ package model;
  */
 public class User {
     /**
-     * Unique ID for user
-     */
-    private String userID;
-    /**
      * User's username
      */
     private String username;
@@ -27,25 +23,29 @@ public class User {
     /**
      * User's gender (m or f)
      */
-    private char gender;
+    private String gender;
+    /**
+     * Unique ID for user
+     */
+    private String userID;
 
     /**
      * Create new User with given params
-     * @param userID unique ID for user
      * @param username user's username
      * @param password user's password
      * @param firstName user's first name
      * @param lastName user's last name
      * @param gender user's gender (m or f)
+     * @param userID unique ID for user
      */
-    public User(String userID, String username, String password, String firstName,
-                String lastName, char gender) {
-        this.userID = userID;
+    public User(String username, String password, String firstName,
+                String lastName, String gender, String userID) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.userID = userID;
     }
 
     public String getUserID() {
@@ -88,11 +88,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -114,8 +114,9 @@ public class User {
                     oUser.getPassword().equals(getPassword()) &&
                     oUser.getFirstName().equals(getFirstName()) &&
                     oUser.getLastName().equals(getLastName()) &&
-                    oUser.getGender() == getGender();
-        } else {
+                    oUser.getGender().equals(getGender());
+        }
+        else {
             return false;
         }
     }

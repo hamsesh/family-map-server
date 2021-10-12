@@ -9,7 +9,7 @@ public class DataAccessException extends Exception {
     }
 
     DataAccessException() {
-            super();
+        super();
     }
 
 }

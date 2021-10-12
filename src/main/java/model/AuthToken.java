@@ -46,7 +46,8 @@ public class AuthToken {
             AuthToken oAuthToken = (AuthToken) o;
             return oAuthToken.getToken().equals(getToken()) &&
                     oAuthToken.getUserID().equals(getUserID());
-        } else {
+        }
+        else {
             return false;
         }
     }

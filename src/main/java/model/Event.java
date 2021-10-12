@@ -160,7 +160,8 @@ public class Event {
                     oEvent.getCity().equals(getCity()) &&
                     oEvent.getEventType().equals(getEventType()) &&
                     oEvent.getYear() == (getYear());
-        } else {
+        }
+        else {
             return false;
         }
     }

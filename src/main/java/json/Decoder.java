@@ -39,6 +39,12 @@ public class Decoder {
      * @throws DecodeException on invalid json
      */
     public RegisterRequest decodeRegister(String jsonString) throws DecodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.fromJson(jsonString, RegisterRequest.class);
+        }
+        catch (JsonSyntaxException e) {
+            throw new DecodeException(e.getMessage());
+        }
     }
 }

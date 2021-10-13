@@ -17,7 +17,7 @@ public class RegisterService {
      * @param request Register request decoded from json
      * @return the result of request
      */
-    RegisterResult register(RegisterRequest request) {
+    public RegisterResult register(RegisterRequest request) {
         return null;
     }
 }

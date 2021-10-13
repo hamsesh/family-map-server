@@ -1,0 +1,10 @@
+Register:
+{
+        "username": "susan",
+        "password": "mysecret",
+        "email": "susan@gmail.com",
+        "firstName": "Susan",
+        "lastName": "Ellis",
+        "gender": "f"
+}
+

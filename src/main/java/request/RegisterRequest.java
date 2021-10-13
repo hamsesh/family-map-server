@@ -27,7 +27,7 @@ public class RegisterRequest {
     /**
      * User's gender (m or f)
      */
-    private char gender;
+    private String gender;
 
     /**
      * Create new RegisterRequest and initialize data members
@@ -38,7 +38,17 @@ public class RegisterRequest {
         email = null;
         firstName = null;
         lastName = null;
-        gender = '\0';
+        gender = null;
+    }
+
+    public RegisterRequest(String username, String password, String email, String firstName,
+                           String lastName, String gender) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
     }
 
     public String getUsername() {
@@ -96,17 +106,28 @@ public class RegisterRequest {
         this.lastName = lastName;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) throws RequestException {
-        if (gender == '\0') {
+    public void setGender(String gender) throws RequestException {
+        if (gender == null) {
             throw new RequestException("Gender is empty!");
         }
-        else if (gender != 'm' && gender != 'f') {
+        else if (!gender.equals("m") && !gender.equals("f")) {
             throw new RequestException("Invalid gender");
         }
         this.gender = gender;
+    }
+
+    /**
+     * Tests to see if all entries are not null/empty and valid
+     * @return Whether this register request is valid
+     */
+    public boolean isValidRequest() {
+        return this.username != null && this.password != null && this.firstName != null && this.lastName != null &&
+                this.email != null && this.gender != null && (this.gender.equals("m") || this.gender.equals("f")) &&
+                !this.username.isEmpty() && !this.password.isEmpty() && !this.firstName.isEmpty() &&
+                !this.lastName.isEmpty() && !this.email.isEmpty();
     }
 }

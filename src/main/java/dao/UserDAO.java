@@ -41,16 +41,17 @@ public class UserDAO {
      * @throws DataAccessException on user already exists, invalid data, or database failure
      */
     public void insert(User user) throws DataAccessException {
-        String sqlStmt = "insert into users (username, passwd, first_name, last_name, gender, user_id) " +
-                            "values (?, ?, ?, ?, ?, ?)";
+        String sqlStmt = "insert into users (username, passwd, email, first_name, last_name, gender, user_id) " +
+                            "values (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sqlStmt)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getFirstName());
-            stmt.setString(4, user.getLastName());
-            stmt.setString(5, user.getGender());
-            stmt.setString(6, user.getUserID());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getFirstName());
+            stmt.setString(5, user.getLastName());
+            stmt.setString(6, user.getGender());
+            stmt.setString(7, user.getUserID());
 
             stmt.executeUpdate();
         }
@@ -65,18 +66,19 @@ public class UserDAO {
      * @return the user that matches the username, null if not found
      */
     public User getUserByUsername(String username) throws DataAccessException {
-        String sql = "select username, passwd, first_name, last_name, gender, user_id " +
+        String sql = "select username, passwd, email, first_name, last_name, gender, user_id " +
                 "from users where username = '" + username + "'";
         User foundUser;
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
 
             String passwd = rs.getString(2);
-            String firstName = rs.getString(3);
-            String lastName = rs.getString(4);
-            String gender = rs.getString(5);
-            String userID = rs.getString(6);
-            return new User(username, passwd, firstName, lastName, gender, userID);
+            String email = rs.getString(3);
+            String firstName = rs.getString(4);
+            String lastName = rs.getString(5);
+            String gender = rs.getString(6);
+            String userID = rs.getString(7);
+            return new User(username, passwd, email, firstName, lastName, gender, userID);
         }
         catch (SQLException e) {
             throw new DataAccessException("Unable to get user by given username");

@@ -41,8 +41,8 @@ public class DAOTest {
     @DisplayName("Insert valid user")
     public void testInsertValidUser() {
         boolean success = false;
-        User newUser = new User("Scrooge_mcduck", "password", "Jim",
-                        "McDuck", "m", "000000");
+        User newUser = new User("Scrooge_Mcduck", "password", "scrooge@yahoo.com",
+                "Scrooge", "McDuck", "m", "000000");
         try {
             UserDAO dao = new UserDAO(db.getConnection());
             dao.insert(newUser);
@@ -58,10 +58,10 @@ public class DAOTest {
     @DisplayName("Insert user with same username")
     public void testInsertDuplicateUser() {
         String exceptionMessage = null;
-        User newUser = new User("scrooge_mcduck", "password", "Scrooge",
-                "McDuck", "m", "000000");
-        User dupeUser = new User("scrooge_mcduck", "password", "Dewey",
-                "McDuck", "m", "000001");
+        User newUser = new User("scrooge_mcduck", "password", "scrooge@yahoo.com",
+                "Scrooge", "McDuck", "m", "000000");
+        User dupeUser = new User("scrooge_mcduck", "password", "dewey@yahoo.com",
+                "Dewey", "McDuck", "m", "000001");
         try {
             UserDAO userDAO = new UserDAO(db.getConnection());
             userDAO.insert(newUser);
@@ -70,16 +70,15 @@ public class DAOTest {
         catch (DataAccessException e) {
             exceptionMessage = e.getMessage();
         }
-        Assertions.assertEquals("[SQLITE_CONSTRAINT_PRIMARYKEY]  A PRIMARY KEY " +
-                "constraint failed (UNIQUE constraint failed: users.username)", exceptionMessage);
+        Assertions.assertEquals("column username is not unique", exceptionMessage);
     }
 
     @Test
     @DisplayName("Retrieve user by username")
     public void testGetUserByUsername() throws DataAccessException {
-        User newUser = new User("donald_duck", "password", "Donald",
+        User newUser = new User("donald_duck", "password", "donald@yahoo.com", "Donald",
                 "Duck", "m", "000000");
-        User newUser2 = new User("dewey_duck", "passw0rd", "Dewey",
+        User newUser2 = new User("dewey_duck", "passw0rd", "dewey@yahoo.com", "Dewey",
                 "Duck", "m", "000001");
         UserDAO dao = new UserDAO(db.getConnection());
         dao.insert(newUser);
@@ -104,8 +103,8 @@ public class DAOTest {
     @Test
     @DisplayName("Attempt to retrieve missing user")
     public void testGetMissingUser() throws DataAccessException {
-        User newUser = new User("scrooge_mcduck", "password", "Scrooge",
-                "McDuck", "m", "000000");
+        User newUser = new User("scrooge_mcduck", "password", "scrooge@yahoo.com",
+                "Scrooge", "McDuck", "m", "000000");
         User foundUser;
 
         UserDAO dao = new UserDAO(db.getConnection());
@@ -227,17 +226,16 @@ public class DAOTest {
             exceptionMessage = e.getMessage();
         }
 
-        Assertions.assertEquals("[SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed " +
-                "(NOT NULL constraint failed: persons.person_id)", exceptionMessage);
+        Assertions.assertEquals("persons.person_id may not be NULL", exceptionMessage);
     }
 
     @Test
     @DisplayName("Clear users")
     public void testClearUsers() throws DataAccessException {
-        User newUser = new User("jim_halpert", "password", "Jim",
+        User newUser = new User("jim_halpert", "password", "jim@yahoo.com", "Jim",
                 "Halpert", "m", "ae4f59");
-        User newUser2 = new User("michael_scott", "pazzword", "Michael",
-                "Scott", "m", "rf3c93");
+        User newUser2 = new User("michael_scott", "pazzword", "michael@yahoo.com",
+                "Michael", "Scott", "m", "rf3c93");
         User foundUser;
         User foundUser2;
 
@@ -342,10 +340,10 @@ public class DAOTest {
 
     // Fill tables with fake data
     private void fill() throws DataAccessException {
-        User newUser = new User("jim_halpert", "password", "Jim",
+        User newUser = new User("jim_halpert", "password", "jim@yahoo.com", "Jim",
                 "Halpert", "m", "ae4f59");
-        User newUser2 = new User("michael_scott", "pazzword", "Michael",
-                "Scott", "m", "rf3c93");
+        User newUser2 = new User("michael_scott", "pazzword", "michael@yahoo.com",
+                "Michael", "Scott", "m", "rf3c93");
         Person newPerson = new Person("ar5j92", "jim_halpert", "Old",
                 "McDonald", "m", null, null, null);
         Person newPerson2 = new Person("mn2c89", "michael_scott", "Abraham",

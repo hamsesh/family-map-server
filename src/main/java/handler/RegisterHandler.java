@@ -2,6 +2,7 @@ package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dao.DataAccessException;
 import json.*;
 import request.RegisterRequest;
 import service.RegisterService;
@@ -26,36 +27,35 @@ public class RegisterHandler extends Handler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+            if (exchange.getRequestMethod().equalsIgnoreCase("post")) {
                 System.out.println("Register request recieved: ");
                 String data = readInputStream(exchange.getRequestBody());
                 System.out.print(data);
 
                 Decoder jsonDecoder = new Decoder();
                 RegisterRequest request;
-                try {
-                    request = jsonDecoder.decodeRegister(data);
-                }
-                catch (DecodeException e) {
-                    throw new HandlerException("Unable to decode request");
-                }
+                request = jsonDecoder.decodeRegister(data);
 
                 if (!request.isValidRequest()) {
-                    throw new HandlerException("Request not valid");
+                    throw new IOException("Request not valid");
                 }
                 RegisterService service = new RegisterService();
                 RegisterResult result = service.register(request);
+
+                Encoder jsonEncoder = new Encoder();
+                String resultData;
+                resultData = jsonEncoder.encodeRegister(result);
+                writeResponseBody(exchange.getResponseBody(), resultData);
             }
         }
-        catch (IOException e) {
+        catch (EncodeException | DataAccessException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
             e.printStackTrace();
         }
-        catch (HandlerException e) {
+        catch (IOException | DecodeException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-            exchange.getRequestBody().close();
             e.printStackTrace();
         }
+        exchange.getRequestBody().close();
     }
 }

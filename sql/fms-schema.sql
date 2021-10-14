@@ -7,6 +7,7 @@ create table users
 (
     username varchar(255) not null primary key,
     passwd varchar(255) not null, -- salt/hash?
+    email varchar(255) not null,
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     gender char(1) not null,

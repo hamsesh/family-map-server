@@ -13,6 +13,10 @@ public class User {
      */
     private String password;
     /**
+     * User's email
+     */
+    private String email;
+    /**
      * User's first name
      */
     private String firstName;
@@ -38,10 +42,11 @@ public class User {
      * @param gender user's gender (m or f)
      * @param userID unique ID for user
      */
-    public User(String username, String password, String firstName,
+    public User(String username, String password, String email, String firstName,
                 String lastName, String gender, String userID) {
         this.username = username;
         this.password = password;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -90,6 +95,14 @@ public class User {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setGender(String gender) {

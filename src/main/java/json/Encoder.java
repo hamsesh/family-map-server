@@ -101,6 +101,12 @@ public class Encoder {
      * @throws EncodeException on invalid object or gson exception
      */
     public String encodeRegister(RegisterResult result) throws EncodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(result);
+        }
+        catch (JsonIOException e) {
+            throw new EncodeException();
+        }
     }
 }

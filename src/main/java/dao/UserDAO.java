@@ -41,7 +41,7 @@ public class UserDAO {
      * @throws DataAccessException on user already exists, invalid data, or database failure
      */
     public void insert(User user) throws DataAccessException {
-        String sqlStmt = "insert into users (username, passwd, email, first_name, last_name, gender, user_id) " +
+        String sqlStmt = "insert into users (username, passwd, email, first_name, last_name, gender, person_id) " +
                             "values (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sqlStmt)) {
@@ -66,11 +66,11 @@ public class UserDAO {
      * @return the user that matches the username, null if not found
      */
     public User getUserByUsername(String username) throws DataAccessException {
-        String sql = "select username, passwd, email, first_name, last_name, gender, user_id " +
+        String sql = "select username, passwd, email, first_name, last_name, gender, person_id " +
                 "from users where username = '" + username + "'";
-        User foundUser;
+        ResultSet rs = null;
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             String passwd = rs.getString(2);
             String email = rs.getString(3);
@@ -82,6 +82,15 @@ public class UserDAO {
         }
         catch (SQLException e) {
             throw new DataAccessException("Unable to get user by given username");
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

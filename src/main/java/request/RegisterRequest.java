@@ -41,6 +41,15 @@ public class RegisterRequest {
         gender = null;
     }
 
+    /**
+     * Create new RegisterRequest with the following data members
+     * @param username user's username
+     * @param password user's password
+     * @param email user's email
+     * @param firstName user's first name
+     * @param lastName user's last name
+     * @param gender user's gender
+     */
     public RegisterRequest(String username, String password, String email, String firstName,
                            String lastName, String gender) {
         this.username = username;

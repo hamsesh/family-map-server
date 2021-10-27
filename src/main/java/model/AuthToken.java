@@ -11,24 +11,24 @@ public class AuthToken {
     /**
      * Corresponding userID
      */
-    private final String userID;
+    private final String username;
 
     /**
      * Create new AuthToken with given token string and userID
      * @param token AuthToken string
-     * @param userID corresponding userID
+     * @param username corresponding userID
      */
-    public AuthToken(String token, String userID) {
+    public AuthToken(String token, String username) {
         this.token = token;
-        this.userID = userID;
+        this.username = username;
     }
 
     public String getToken() {
         return token;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUsername() {
+        return username;
     }
 
     /**
@@ -42,10 +42,9 @@ public class AuthToken {
             return true;
         if (o == null)
             return false;
-        if (o instanceof AuthToken) {
-            AuthToken oAuthToken = (AuthToken) o;
+        if (o instanceof AuthToken oAuthToken) {
             return oAuthToken.getToken().equals(getToken()) &&
-                    oAuthToken.getUserID().equals(getUserID());
+                    oAuthToken.getUsername().equals(getUsername());
         }
         else {
             return false;

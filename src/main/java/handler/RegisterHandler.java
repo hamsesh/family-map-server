@@ -30,7 +30,7 @@ public class RegisterHandler extends Handler implements HttpHandler {
             if (exchange.getRequestMethod().equalsIgnoreCase("post")) {
                 System.out.println("Register request recieved: ");
                 String data = readInputStream(exchange.getRequestBody());
-                System.out.print(data);
+                System.out.printf("%s%n", data);
 
                 Decoder jsonDecoder = new Decoder();
                 RegisterRequest request;
@@ -39,23 +39,37 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 if (!request.isValidRequest()) {
                     throw new IOException("Request not valid");
                 }
-                RegisterService service = new RegisterService();
+                RegisterService service = new RegisterService(DB_PATH);
                 RegisterResult result = service.register(request);
+                System.out.printf("Register process complete. Status: %s", result.isSuccess() ? "Success" : "Failure");
+                if (!result.isSuccess()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    //FIXME: specify problem
+                    exchange.getRequestBody().close();
+                    exchange.getResponseBody().close();
+                    return;
+                }
 
                 Encoder jsonEncoder = new Encoder();
                 String resultData;
                 resultData = jsonEncoder.encodeRegister(result);
+                exchange.getRequestBody().close();
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 writeResponseBody(exchange.getResponseBody(), resultData);
+                exchange.getResponseBody().close();
             }
         }
-        catch (EncodeException | DataAccessException e) {
+        catch (EncodeException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             e.printStackTrace();
+            exchange.getRequestBody().close();
+            exchange.getResponseBody().close();
+            exchange.getResponseBody().close();
         }
         catch (IOException | DecodeException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             e.printStackTrace();
+            exchange.getRequestBody().close();
         }
-        exchange.getRequestBody().close();
     }
 }

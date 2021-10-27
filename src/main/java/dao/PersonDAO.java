@@ -57,9 +57,10 @@ public class PersonDAO {
      */
     public Person getPersonByID(String personID) throws DataAccessException {
         String sql = "select * from persons where person_id = '" + personID + "'";
+        ResultSet rs = null;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             String associatedUsername = rs.getString(2);
             String firstName = rs.getString(3);
@@ -73,6 +74,15 @@ public class PersonDAO {
         }
         catch (SQLException e) {
             throw new DataAccessException("Unable to get person by given ID");
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -93,11 +103,12 @@ public class PersonDAO {
     public Person[] getAllPersonsByUsername(String username) throws DataAccessException {
         String countSql = "select count(*) from persons where username = '" + username + "'";
         String sql = "select * from persons where username = '" + username + "'";
+        ResultSet rs = null;
         Person[] foundPersons;
         int numPersons;
 
         try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
-            ResultSet rs = countStmt.executeQuery();
+            rs = countStmt.executeQuery();
             numPersons = rs.getInt(1);
         }
         catch (SQLException e) {
@@ -108,7 +119,7 @@ public class PersonDAO {
         else foundPersons = new Person[numPersons];
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             int i = 0;
             while (rs.next()) {
                 String person_id = rs.getString(1);
@@ -127,6 +138,16 @@ public class PersonDAO {
         catch (SQLException e) {
             throw new DataAccessException("Error getting persons");
         }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         return foundPersons;
     }
 

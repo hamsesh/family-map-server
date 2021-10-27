@@ -19,10 +19,6 @@ public class RegisterResult {
      */
     private String personID;
     /**
-     * User's new person object
-     */
-    private Person person;
-    /**
      * Status of request
      */
     boolean success;
@@ -32,15 +28,20 @@ public class RegisterResult {
     private String errorMessage;
 
     /**
-     * Create new RegisterResult and initialize data members
+     * Create new RegisterResult with the following data members
+     * @param authToken Resulting auth token
+     * @param username Associated username
+     * @param personID Associated person ID
+     * @param success Success status
+     * @param errorMessage Generated error message if not successful
      */
-    public RegisterResult() {
-        authToken = null;
-        username = null;
-        personID = null;
-        person = null;
-        success = false;
-        errorMessage = null;
+    public RegisterResult(String authToken, String username, String personID, boolean success,
+                          String errorMessage) {
+        this.authToken = authToken;
+        this.username = username;
+        this.personID = personID;
+        this.success = success;
+        this.errorMessage = errorMessage;
     }
 
     public String getAuthToken() {
@@ -65,14 +66,6 @@ public class RegisterResult {
 
     public void setPersonID(String personID) {
         this.personID = personID;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     public boolean isSuccess() {

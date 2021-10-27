@@ -31,7 +31,7 @@ public class User {
     /**
      * Unique ID for user
      */
-    private String userID;
+    private String personID;
 
     /**
      * Create new User with given params
@@ -40,25 +40,25 @@ public class User {
      * @param firstName user's first name
      * @param lastName user's last name
      * @param gender user's gender (m or f)
-     * @param userID unique ID for user
+     * @param personID unique ID for user
      */
     public User(String username, String password, String email, String firstName,
-                String lastName, String gender, String userID) {
+                String lastName, String gender, String personID) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.userID = userID;
+        this.personID = personID;
     }
 
     public String getUserID() {
-        return userID;
+        return personID;
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.personID = userID;
     }
 
     public String getUsername() {

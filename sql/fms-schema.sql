@@ -11,7 +11,8 @@ create table users
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     gender char(1) not null,
-    user_id varchar(255) not null
+    person_id varchar(255) not null,
+    foreign key(person_id) references persons(person_id)
 );
 
 create table persons

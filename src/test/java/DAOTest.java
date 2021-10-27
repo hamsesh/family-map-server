@@ -304,13 +304,49 @@ public class DAOTest {
     }
 
     @Test
+    @DisplayName("Insert event")
+    public void testInsertEvent() {
+        boolean success = false;
+        Event newEvent = new Event("000000", "stephen_colbert", "000000", 2.4f, 2.4f,
+                "USA", "Provo", "birth", 1970);
+
+        try {
+            EventDAO eventDAO = new EventDAO(db.getConnection());
+            eventDAO.insert(newEvent);
+            success = true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Assertions.assertTrue(success);
+    }
+
+    @Test
+    @DisplayName("Insert AuthToken")
+    public void testInsertAuthToken() {
+        boolean success = false;
+        AuthToken token = new AuthToken("000000", "jimboy_banana");
+
+        try {
+            AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
+            authTokenDAO.insert(token);
+            success = true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Assertions.assertTrue(success);
+    }
+
+    @Test
     @DisplayName("Clear tables")
     public void testClearTables() throws DataAccessException {
-        //FIXME: add data to all tables
         User foundUser;
         Person foundPerson;
         Event foundEvent;
-        AuthToken foundAuthToken;
+        boolean validAuthToken;
 
         fill();
 
@@ -334,8 +370,27 @@ public class DAOTest {
             foundPerson = null;
         }
 
+        EventDAO eventDAO = new EventDAO(db.getConnection());
+        try {
+            foundEvent = eventDAO.getEventByID("jm1q90");
+        }
+        catch (DataAccessException e) {
+            foundEvent = null;
+        }
+
+        AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
+        try {
+            validAuthToken = authTokenDAO.validate(new AuthToken("cme342018", "jim_halpert"));
+        }
+        catch (DataAccessException e) {
+            e.printStackTrace();
+            validAuthToken = true;
+        }
+
         Assertions.assertNull(foundUser);
         Assertions.assertNull(foundPerson);
+        Assertions.assertNull(foundEvent);
+        Assertions.assertFalse(validAuthToken);
     }
 
     // Fill tables with fake data
@@ -366,6 +421,12 @@ public class DAOTest {
 
         personDAO.insert(newPerson);
         personDAO.insert(newPerson2);
+
+        eventDAO.insert(newEvent);
+        eventDAO.insert(newEvent2);
+
+        authTokenDAO.insert(newToken);
+        authTokenDAO.insert(newToken2);
 
         db.close(true);
     }

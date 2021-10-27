@@ -13,7 +13,7 @@ public class EventDAO {
     /**
      * Connection to database
      */
-    private final Connection conn;
+    private Connection conn;
 
     /**
      * Create new EventDAO with given connection
@@ -30,14 +30,10 @@ public class EventDAO {
      * @throws DataAccessException on failure to insert (Invalid data or database failure)
      */
     public void insert(Event event) throws DataAccessException {
-        //We can structure our string to be similar to a sql command, but if we insert question
-        //marks we can change them later with help from the statement
-        String sql = "INSERT INTO Events (EventID, AssociatedUsername, PersonID, Latitude, Longitude, " +
-                "Country, City, EventType, Year) VALUES(?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into events (event_id, username, person_id, latitude, longitude, " +
+                "country, city, event_type, year) values(?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            //Using the statements built-in set(type) functions we can pick the question mark we want
-            //to fill in and give it a proper value. The first argument corresponds to the first
-            //question mark found in our sql String
+
             stmt.setString(1, event.getEventID());
             stmt.setString(2, event.getUsername());
             stmt.setString(3, event.getPersonID());
@@ -60,32 +56,33 @@ public class EventDAO {
      * @return Found event, or null on event not found
      * @throws DataAccessException on database failure or invalid data
      */
-    public Event find(String eventID) throws DataAccessException {
+    public Event getEventByID(String eventID) throws DataAccessException {
         Event event;
         ResultSet rs = null;
-        String sql = "SELECT * FROM Events WHERE EventID = ?;";
+        String sql = "select * from events where event_id = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, eventID);
             rs = stmt.executeQuery();
             if (rs.next()) {
-                event = new Event(rs.getString("EventID"), rs.getString("AssociatedUsername"),
-                        rs.getString("PersonID"), rs.getFloat("Latitude"), rs.getFloat("Longitude"),
-                        rs.getString("Country"), rs.getString("City"), rs.getString("EventType"),
-                        rs.getInt("Year"));
+                event = new Event(rs.getString("event_id"), rs.getString("username"),
+                        rs.getString("person_id"), rs.getFloat("latitude"), rs.getFloat("longitude"),
+                        rs.getString("country"), rs.getString("city"), rs.getString("event_type"),
+                        rs.getInt("year"));
                 return event;
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while finding event");
-        } finally {
-            if(rs != null) {
+        }
+        finally {
+            if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-
         }
         return null;
     }
@@ -106,5 +103,13 @@ public class EventDAO {
      */
     public void deleteEvents() throws DataAccessException {
 
+    }
+
+    /**
+     * Set the connection
+     * @param conn New connection
+     */
+    public void setConnection(Connection conn) {
+        this.conn = conn;
     }
 }

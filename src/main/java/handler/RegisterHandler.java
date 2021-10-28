@@ -38,13 +38,17 @@ public class RegisterHandler extends Handler implements HttpHandler {
 
                 Decoder jsonDecoder = new Decoder();
                 RegisterRequest request;
+                System.out.println("Decoding...");
                 request = jsonDecoder.decodeRegister(data);
+                System.out.println("Finished decoding!");
 
                 if (!request.isValidRequest()) {
+                    System.out.println("Invalid request");
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     exchange.getRequestBody().close();
                     throw new IOException("Error: Register request not valid");
                 }
+                System.out.println("Valid request");
                 RegisterService registerService = new RegisterService(DB_PATH);
                 RegisterResult registerResult = registerService.register(request);
                 System.out.printf("Register process complete. Status: %s",
@@ -77,9 +81,14 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 String resultData;
                 resultData = jsonEncoder.encodeRegister(registerResult);
                 exchange.getRequestBody().close();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, resultData.length());
                 writeResponseBody(exchange.getResponseBody(), resultData);
                 exchange.getResponseBody().close();
+            }
+            else {
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
+                exchange.getRequestBody().close();
+                throw new IOException("Error: Invalid HTTP Request");
             }
         }
         catch (EncodeException e) {

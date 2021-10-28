@@ -53,7 +53,7 @@ public class User {
         this.personID = personID;
     }
 
-    public String getUserID() {
+    public String getPersonID() {
         return personID;
     }
 
@@ -122,7 +122,7 @@ public class User {
             return false;
         if (o instanceof User) {
             User oUser = (User) o;
-            return oUser.getUserID().equals(getUserID()) &&
+            return oUser.getPersonID().equals(getPersonID()) &&
                     oUser.getUsername().equals(getUsername()) &&
                     oUser.getPassword().equals(getPassword()) &&
                     oUser.getFirstName().equals(getFirstName()) &&

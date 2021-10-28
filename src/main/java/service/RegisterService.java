@@ -47,11 +47,6 @@ public class RegisterService extends Service {
             AuthToken authToken = new AuthToken(token, request.getUsername());
             authTokenDAO.insert(authToken);
 
-            PersonDAO personDAO = new PersonDAO(conn);
-            Person newPerson = new Person(personID, request.getUsername(), request.getFirstName(),
-                    request.getLastName(), request.getGender(), null, null, null);
-            personDAO.insert(newPerson);
-
             db.close(true);
         }
         catch (DataAccessException e) {

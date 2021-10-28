@@ -51,7 +51,7 @@ public class UserDAO {
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
             stmt.setString(6, user.getGender());
-            stmt.setString(7, user.getUserID());
+            stmt.setString(7, user.getPersonID());
 
             stmt.executeUpdate();
         }
@@ -77,8 +77,8 @@ public class UserDAO {
             String firstName = rs.getString(4);
             String lastName = rs.getString(5);
             String gender = rs.getString(6);
-            String userID = rs.getString(7);
-            return new User(username, passwd, email, firstName, lastName, gender, userID);
+            String personID = rs.getString(7);
+            return new User(username, passwd, email, firstName, lastName, gender, personID);
         }
         catch (SQLException e) {
             throw new DataAccessException("Unable to get user by given username");
@@ -92,16 +92,6 @@ public class UserDAO {
                 }
             }
         }
-    }
-
-    /**
-     * Get a user from the database by ID
-     * @param userID ID of user
-     * @return the user that matches the ID, null if not found
-     * @throws DataAccessException on invalid data or database failure
-     */
-    public User getUserByID(String userID) throws DataAccessException {
-        return null;
     }
 
     /**

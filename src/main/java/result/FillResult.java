@@ -5,6 +5,10 @@ package result;
  */
 public class FillResult {
     /**
+     * New personID for the user
+     */
+    private String personID;
+    /**
      * Message from request
      */
     private String message;
@@ -17,6 +21,7 @@ public class FillResult {
      * Create new FillResult and initialize data members
      */
     public FillResult() {
+        personID = null;
         message = null;
         success = false;
     }
@@ -26,9 +31,14 @@ public class FillResult {
      * @param message Message from request
      * @param success Success status
      */
-    public FillResult(String message, boolean success) {
+    public FillResult(String personID, String message, boolean success) {
+        this.personID = personID;
         this.message = message;
         this.success = success;
+    }
+
+    public String getPersonID() {
+        return personID;
     }
 
     public String getMessage() {

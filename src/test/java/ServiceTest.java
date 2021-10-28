@@ -21,6 +21,7 @@ public class ServiceTest {
         db = new Database();
         db.open(TEST_DB_PATH);
     }
+
     // Clear tables
     @AfterAll
     public static void cleanUp() throws DataAccessException {
@@ -54,43 +55,38 @@ public class ServiceTest {
     @Test
     @DisplayName("Fill 5 generations")
     public void testFillFiveGenerations() throws DataAccessException {
-        boolean success = false;
         Connection conn = db.open(TEST_DB_PATH);
         UserDAO userDAO = new UserDAO(conn);
         userDAO.insert(new User("jiminy-cricket", "password", "jiminy@test.com",
                 "Jiminy", "Cricket", "m", UUID.randomUUID().toString()));
-
-        String personID = UUID.randomUUID().toString();
-        PersonDAO personDAO = new PersonDAO(conn);
-        personDAO.insert(new Person(personID, "jiminy-cricket", "Jiminy", "Cricket",
-                "m", null, null, null));
         db.close(true);
 
         try {
             FillRequest fillRequest = new FillRequest("jiminy-cricket", 5);
             FillService fillService = new FillService(TEST_DB_PATH);
             FillResult fillResult = fillService.fill(fillRequest);
-            personDAO.setConnection(db.open(TEST_DB_PATH));
+            PersonDAO personDAO = new PersonDAO(db.open(TEST_DB_PATH));
             Person[] familyTree = personDAO.getAllPersonsByUsername("jiminy-cricket");
 
-            Assertions.assertEquals(31, familyTree.length);
 
-            Person firstGen = personDAO.getPersonByID(personID);
-            Assertions.assertNotNull(firstGen);
+
+            Person firstGen = personDAO.getPersonByID(fillResult.getPersonID());
             Person secondGen = personDAO.getPersonByID(firstGen.getMotherID());
-            Assertions.assertNotNull(secondGen);
             Person thirdGen = personDAO.getPersonByID(secondGen.getFatherID());
-            Assertions.assertNotNull(thirdGen);
             Person fourthGen = personDAO.getPersonByID(thirdGen.getMotherID());
-            Assertions.assertNotNull(fourthGen);
             Person fifthGen = personDAO.getPersonByID(fourthGen.getFatherID());
-            Assertions.assertNotNull(fifthGen);
-            success = true;
             db.close(false);
+
+            Assertions.assertEquals(63, familyTree.length);
+            Assertions.assertNotNull(firstGen);
+            Assertions.assertNotNull(secondGen);
+            Assertions.assertNotNull(thirdGen);
+            Assertions.assertNotNull(fourthGen);
+            Assertions.assertNotNull(fifthGen);
         }
         catch (RequestException e) {
+            db.close(false);
             e.printStackTrace();
         }
-        Assertions.assertTrue(success);
     }
 }

@@ -5,6 +5,7 @@ import model.User;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.sql.Connection;
 
 import dao.*;
 
@@ -70,7 +71,8 @@ public class DAOTest {
         catch (DataAccessException e) {
             exceptionMessage = e.getMessage();
         }
-        Assertions.assertEquals("column username is not unique", exceptionMessage);
+        Assertions.assertEquals("[SQLITE_CONSTRAINT_PRIMARYKEY]  A PRIMARY KEY constraint failed " +
+                "(UNIQUE constraint failed: users.username)", exceptionMessage);
     }
 
     @Test
@@ -147,6 +149,10 @@ public class DAOTest {
 
         Assertions.assertNotNull(foundPerson);
         Assertions.assertEquals("michael_scott", foundPerson.getAssociatedUsername());
+
+        personDAO.deletePersons();
+        db.close(true);
+        db.open(TEST_DB_PATH);
     }
 
     @Test
@@ -195,6 +201,27 @@ public class DAOTest {
     }
 
     @Test
+    @DisplayName("Delete persons by username")
+    public void testDeletePersonsByUsername() throws DataAccessException {
+        fill(db.getConnection());
+        PersonDAO personDAO = new PersonDAO(db.openWithForeignKey(TEST_DB_PATH));
+        personDAO.deletePersonsByUsername("jim_halpert");
+        db.close(true);
+
+        personDAO.setConnection(db.open(TEST_DB_PATH));
+        Person foundPerson = personDAO.getPersonByID("ar5j92");
+        EventDAO eventDAO = new EventDAO(db.getConnection());
+        Event foundEvent = eventDAO.getEventByID("wr8m89");
+
+        Assertions.assertNull(foundPerson);
+        Assertions.assertNull(foundEvent);
+
+        db.clearTables();
+        db.close(true);
+        db.open(TEST_DB_PATH);
+    }
+
+    @Test
     @DisplayName("Insert valid person")
     public void testInsertValidPerson() {
         boolean success = false;
@@ -226,7 +253,8 @@ public class DAOTest {
             exceptionMessage = e.getMessage();
         }
 
-        Assertions.assertEquals("persons.person_id may not be NULL", exceptionMessage);
+        Assertions.assertEquals("[SQLITE_CONSTRAINT_NOTNULL]  A NOT NULL constraint failed (NOT NULL " +
+                "constraint failed: persons.person_id)", exceptionMessage);
     }
 
     @Test
@@ -348,7 +376,7 @@ public class DAOTest {
         Event foundEvent;
         boolean validAuthToken;
 
-        fill();
+        fill(db.getConnection());
 
         db.open(TEST_DB_PATH);
         db.clearTables();
@@ -394,7 +422,7 @@ public class DAOTest {
     }
 
     // Fill tables with fake data
-    private void fill() throws DataAccessException {
+    private void fill(Connection conn) throws DataAccessException {
         User newUser = new User("jim_halpert", "password", "jim@yahoo.com", "Jim",
                 "Halpert", "m", "ae4f59");
         User newUser2 = new User("michael_scott", "pazzword", "michael@yahoo.com",
@@ -403,18 +431,17 @@ public class DAOTest {
                 "McDonald", "m", null, null, null);
         Person newPerson2 = new Person("mn2c89", "michael_scott", "Abraham",
                 "Lincoln", "m", "ar5j92", null, null);
-        Event newEvent = new Event("jm1q90", "jim_halpert", "mn2c89", 38.89037f,
+        Event newEvent = new Event("jm1q90", "michael_scott", "mn2c89", 38.89037f,
                 -77.03196f, "USA", "Washington D.C.", "death", 1865);
-        Event newEvent2 = new Event("wr8m89", "michael_scott", "ar5j92", 34.115784f,
+        Event newEvent2 = new Event("wr8m89", "jim_halpert", "ar5j92", 34.115784f,
                 -117.302399f, "USA", "San Bernadino", "birth", 1940);
         AuthToken newToken = new AuthToken("cme342018", "jim_halpert");
         AuthToken newToken2 = new AuthToken("qor492048", "michael_scott");
 
-        db.open(TEST_DB_PATH);
-        UserDAO userDAO = new UserDAO(db.getConnection());
-        PersonDAO personDAO = new PersonDAO(db.getConnection());
-        EventDAO eventDAO = new EventDAO(db.getConnection());
-        AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
+        UserDAO userDAO = new UserDAO(conn);
+        PersonDAO personDAO = new PersonDAO(conn);
+        EventDAO eventDAO = new EventDAO(conn);
+        AuthTokenDAO authTokenDAO = new AuthTokenDAO(conn);
 
         userDAO.insert(newUser);
         userDAO.insert(newUser2);

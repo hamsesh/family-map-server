@@ -1,3 +1,5 @@
+
+
 package dao;
 
 import org.sqlite.SQLiteConfig;
@@ -53,8 +55,27 @@ public class Database {
             final String CONNECTION_URL = "jdbc:sqlite:" + dbPath;
 
             // Open a database connection to the file given in the path
+            conn = DriverManager.getConnection(CONNECTION_URL);
+
+            // Start a transaction
+            conn.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Unable to open connection to database");
+        }
+
+        return conn;
+    }
+
+    public Connection openWithForeignKey(String dbPath) throws DataAccessException {
+        try {
+            //The Structure for this Connection is driver:language:path
+            //The path assumes you start in the root of your project unless given a non-relative path
+            final String CONNECTION_URL = "jdbc:sqlite:" + dbPath;
+
+            // Open a database connection to the file given in the path
             SQLiteConfig config = new SQLiteConfig();
-            //config.enforceForeignKeys(true); FIXME: Figure out if foreign key restraints are required
+            config.enforceForeignKeys(true);
             conn = DriverManager.getConnection(CONNECTION_URL, config.toProperties());
 
             // Start a transaction
@@ -75,18 +96,11 @@ public class Database {
         }
     }
 
-    //When we are done manipulating the database it is important to close the connection. This will
-    //End the transaction and allow us to either commit our changes to the database or rollback any
-    //changes that were made before we encountered a potential error.
-
     /**
      * Close current open connection
      * @param commit Commit current changes
      * @throws DataAccessException on failure to close connection or commit changes
      */
-    //IMPORTANT: IF YOU FAIL TO CLOSE A CONNECTION AND TRY TO REOPEN THE DATABASE THIS WILL CAUSE THE
-    //DATABASE TO LOCK. YOUR CODE MUST ALWAYS INCLUDE A CLOSURE OF THE DATABASE NO MATTER WHAT ERRORS
-    //OR PROBLEMS YOU ENCOUNTER
     public void close(boolean commit) throws DataAccessException {
         try {
             if (commit) {

@@ -36,10 +36,10 @@ public class FillService {
             throw new RequestException("Error: Invalid number of generations");
         }
         try {
-            //FIXME: delete any existing data for user
             Database db = new Database();
             Connection conn = db.open(dbPath);
             PersonDAO personDAO = new PersonDAO(conn);
+            personDAO.deletePersonsByUsername(request.getUsername());
             //FIXME: Do the actual filling
         }
         catch (DataAccessException e) {

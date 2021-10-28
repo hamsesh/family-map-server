@@ -1,9 +1,7 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+
 import model.Person;
 import model.User;
 
@@ -61,7 +59,9 @@ public class PersonDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             rs = stmt.executeQuery();
-
+            if (!rs.next()) {
+                return null;
+            }
             String associatedUsername = rs.getString(2);
             String firstName = rs.getString(3);
             String lastName = rs.getString(4);
@@ -149,6 +149,27 @@ public class PersonDAO {
         }
 
         return foundPersons;
+    }
+
+    /**
+     * Delete all persons associated to username
+     */
+    public void deletePersonsByUsername(String username) throws DataAccessException {
+        String sql = "delete from persons where username = '" + username + "'";
+        try {
+            Statement foreignStmt = conn.createStatement();
+            foreignStmt.executeUpdate("PRAGMA foreign_keys=ON;");
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     /**

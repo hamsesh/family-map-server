@@ -16,6 +16,19 @@ public class JSONTest {
         Location[] locations = jsonDecoder.parseLocations(locationsJsonString);
 
         Assertions.assertEquals("Canada", locations[0].getCountry());
-        Assertions.assertEquals(-90f, locations[locations.length-1].getLatitude());
+        Assertions.assertEquals(-90f, locations[locations.length - 1].getLatitude());
     }
+
+    @Test
+    @DisplayName("Parsing names")
+    public void testParseNames() throws IOException, DecodeException {
+        String fnamesJsonString = Service.parseFileToString("json" + File.separator + "fnames.json");
+        Decoder jsonDecoder = new Decoder();
+        String[] fnames = jsonDecoder.parseNames(fnamesJsonString);
+
+        Assertions.assertEquals("Jolynn", fnames[0]);
+        Assertions.assertEquals("Ludivina", fnames[fnames.length - 1]);
+        Assertions.assertEquals(147, fnames.length);
+    }
+
 }

@@ -47,11 +47,14 @@ public class Decoder {
         return null;
     }
 
-    public String[] parseNames(String jsonString) throws FileNotFoundException {
+    public String[] parseNames(String jsonString) throws DecodeException {
         Gson gson = new Gson();
-        JsonElement jsonElement = JsonParser.parseString(jsonString);
-        //FIXME: not done
-        return null;
+        try {
+            return gson.fromJson(jsonString, String[].class);
+        }
+        catch (JsonSyntaxException e) {
+            throw new DecodeException(e.getMessage());
+        }
     }
 
     public Location[] parseLocations(String jsonString) throws DecodeException {

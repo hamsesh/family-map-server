@@ -70,6 +70,9 @@ public class EventDAO {
                         rs.getInt("year"));
                 return event;
             }
+            else {
+                return null;
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -84,8 +87,9 @@ public class EventDAO {
                 }
             }
         }
-        return null;
     }
+
+    public void deleteEventsByPersonID(String personID) throws DataAccessException {}
 
     /**
      * Get all events associated with the given AuthToken

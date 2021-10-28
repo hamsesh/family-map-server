@@ -21,6 +21,16 @@ public class FillResult {
         success = false;
     }
 
+    /**
+     * Create new FillResult with following data members
+     * @param message Message from request
+     * @param success Success status
+     */
+    public FillResult(String message, boolean success) {
+        this.message = message;
+        this.success = success;
+    }
+
     public String getMessage() {
         return message;
     }

@@ -1,7 +1,12 @@
 package json;
 
 import com.google.gson.*;
+import model.Location;
 import request.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 /**
  * Decodes json strings into java object requests
@@ -39,9 +44,20 @@ public class Decoder {
      * @throws DecodeException on invalid json
      */
     public RegisterRequest decodeRegister(String jsonString) throws DecodeException {
+        return null;
+    }
+
+    public String[] parseNames(String jsonString) throws FileNotFoundException {
+        Gson gson = new Gson();
+        JsonElement jsonElement = JsonParser.parseString(jsonString);
+        //FIXME: not done
+        return null;
+    }
+
+    public Location[] parseLocations(String jsonString) throws DecodeException {
         Gson gson = new Gson();
         try {
-            return gson.fromJson(jsonString, RegisterRequest.class);
+            return gson.fromJson(jsonString, Location[].class);
         }
         catch (JsonSyntaxException e) {
             throw new DecodeException(e.getMessage());

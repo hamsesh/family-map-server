@@ -1,11 +1,15 @@
 import dao.*;
 import model.AuthToken;
+import model.Person;
+import model.User;
 import org.junit.jupiter.api.*;
 import request.*;
 import result.*;
 import service.*;
 
 import java.io.File;
+import java.sql.Connection;
+import java.util.UUID;
 
 public class ServiceTest {
     private static final String TEST_DB_PATH = "sql" + File.separator + "test-db.db";
@@ -28,9 +32,9 @@ public class ServiceTest {
     @Test
     @DisplayName("Successful register test")
     public void testRegister() throws DataAccessException {
-        RegisterResult response;
         RegisterRequest request = new RegisterRequest("jimbob-77", "password", "test@test.com",
                 "Jim", "Bob", "m");
+        RegisterResult response;
         RegisterService service = new RegisterService(TEST_DB_PATH);
         response = service.register(request);
         Assertions.assertTrue(response.isSuccess());
@@ -45,5 +49,48 @@ public class ServiceTest {
         Assertions.assertTrue(authTokenDAO.validate(new AuthToken(response.getAuthToken(), "jimbob-77")));
 
         db.close(false);
+    }
+
+    @Test
+    @DisplayName("Fill 5 generations")
+    public void testFillFiveGenerations() throws DataAccessException {
+        boolean success = false;
+        Connection conn = db.open(TEST_DB_PATH);
+        UserDAO userDAO = new UserDAO(conn);
+        userDAO.insert(new User("jiminy-cricket", "password", "jiminy@test.com",
+                "Jiminy", "Cricket", "m", UUID.randomUUID().toString()));
+
+        String personID = UUID.randomUUID().toString();
+        PersonDAO personDAO = new PersonDAO(conn);
+        personDAO.insert(new Person(personID, "jiminy-cricket", "Jiminy", "Cricket",
+                "m", null, null, null));
+        db.close(true);
+
+        try {
+            FillRequest fillRequest = new FillRequest("jiminy-cricket", 5);
+            FillService fillService = new FillService(TEST_DB_PATH);
+            FillResult fillResult = fillService.fill(fillRequest);
+            personDAO.setConnection(db.open(TEST_DB_PATH));
+            Person[] familyTree = personDAO.getAllPersonsByUsername("jiminy-cricket");
+
+            Assertions.assertEquals(31, familyTree.length);
+
+            Person firstGen = personDAO.getPersonByID(personID);
+            Assertions.assertNotNull(firstGen);
+            Person secondGen = personDAO.getPersonByID(firstGen.getMotherID());
+            Assertions.assertNotNull(secondGen);
+            Person thirdGen = personDAO.getPersonByID(secondGen.getFatherID());
+            Assertions.assertNotNull(thirdGen);
+            Person fourthGen = personDAO.getPersonByID(thirdGen.getMotherID());
+            Assertions.assertNotNull(fourthGen);
+            Person fifthGen = personDAO.getPersonByID(fourthGen.getFatherID());
+            Assertions.assertNotNull(fifthGen);
+            success = true;
+            db.close(false);
+        }
+        catch (RequestException e) {
+            e.printStackTrace();
+        }
+        Assertions.assertTrue(success);
     }
 }

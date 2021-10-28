@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17">
-      <module name="family-map-server" target="16" />
+      <module name="family-map-server" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

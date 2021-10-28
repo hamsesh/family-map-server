@@ -1,6 +1,8 @@
 package service;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -12,5 +14,9 @@ public class Service {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
+    }
+
+    public static String parseFileToString(String path) throws IOException {
+            return new String(Files.readAllBytes(Paths.get(path)));
     }
 }

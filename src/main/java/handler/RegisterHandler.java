@@ -4,7 +4,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import dao.DataAccessException;
 import json.*;
+import request.FillRequest;
 import request.RegisterRequest;
+import request.RequestException;
+import result.FillResult;
+import service.FillService;
 import service.RegisterService;
 import result.RegisterResult;
 
@@ -37,12 +41,16 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 request = jsonDecoder.decodeRegister(data);
 
                 if (!request.isValidRequest()) {
-                    throw new IOException("Request not valid");
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+                    exchange.getRequestBody().close();
+                    exchange.getResponseBody().close();
+                    throw new IOException("Register request not valid");
                 }
-                RegisterService service = new RegisterService(DB_PATH);
-                RegisterResult result = service.register(request);
-                System.out.printf("Register process complete. Status: %s", result.isSuccess() ? "Success" : "Failure");
-                if (!result.isSuccess()) {
+                RegisterService registerService = new RegisterService(DB_PATH);
+                RegisterResult registerResult = registerService.register(request);
+                System.out.printf("Register process complete. Status: %s",
+                        registerResult.isSuccess() ? "Success" : "Failure");
+                if (!registerResult.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     //FIXME: specify problem
                     exchange.getRequestBody().close();
@@ -50,9 +58,20 @@ public class RegisterHandler extends Handler implements HttpHandler {
                     return;
                 }
 
+                FillRequest fillRequest = new FillRequest(registerResult.getUsername(), 4);
+
+                if (!fillRequest.isValidRequest()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+                    exchange.getRequestBody().close();
+                    exchange.getResponseBody().close();
+                    throw new IOException("Fill request not valid");
+                }
+                FillService fillService = new FillService(DB_PATH);
+                FillResult fillResult = fillService.fill(fillRequest);
+
                 Encoder jsonEncoder = new Encoder();
                 String resultData;
-                resultData = jsonEncoder.encodeRegister(result);
+                resultData = jsonEncoder.encodeRegister(registerResult);
                 exchange.getRequestBody().close();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 writeResponseBody(exchange.getResponseBody(), resultData);
@@ -64,12 +83,12 @@ public class RegisterHandler extends Handler implements HttpHandler {
             e.printStackTrace();
             exchange.getRequestBody().close();
             exchange.getResponseBody().close();
-            exchange.getResponseBody().close();
         }
-        catch (IOException | DecodeException e) {
+        catch (IOException | DecodeException | RequestException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             e.printStackTrace();
             exchange.getRequestBody().close();
+            exchange.getResponseBody().close();
         }
     }
 }

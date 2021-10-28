@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Event;
+import model.Person;
 
 /**
  * Interfaces with events in database
@@ -46,7 +47,7 @@ public class EventDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Error encountered while inserting into the database");
+            throw new DataAccessException("Error: " + e.getMessage());
         }
     }
 
@@ -89,16 +90,61 @@ public class EventDAO {
         }
     }
 
-    public void deleteEventsByPersonID(String personID) throws DataAccessException {}
-
     /**
-     * Get all events associated with the given AuthToken
-     * @param authToken AuthToken of currently logged-in user
+     * Get all events associated with the given username
+     * @param username Username of currently logged-in user, authenticated via AuthToken
      * @return array of events
      * @throws DataAccessException on database failure or invalid data
      */
-    public Event[] findAllEvents(String authToken) throws DataAccessException {
-        return null;
+    public Event[] getAllEventsByUsername(String username) throws DataAccessException {
+        String countSql = "select count(*) from events where username = '" + username + "'";
+        String sql = "select * from events where username = '" + username + "'";
+        ResultSet rs = null;
+        Event[] foundEvents;
+        int numEvents;
+
+        try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
+            rs = countStmt.executeQuery();
+            numEvents = rs.getInt(1);
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Unable to count persons");
+        }
+
+        if (numEvents == 0) return null;
+        else foundEvents = new Event[numEvents];
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            rs = stmt.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+                String event_id = rs.getString(1);
+                String associatedUsername = rs.getString(2);
+                String person_id = rs.getString(3);
+                float latitude = rs.getFloat(4);
+                float longitude = rs.getFloat(5);
+                String country = rs.getString(6);
+                String city = rs.getString(7);
+                String eventType = rs.getString(8);
+                int year = rs.getInt(9);
+                foundEvents[i] = new Event(event_id, associatedUsername, person_id, latitude,
+                        longitude, country, city, eventType, year);
+                i++;
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Error getting persons");
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return foundEvents;
     }
 
     /**

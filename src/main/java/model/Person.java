@@ -134,17 +134,18 @@ public class Person {
             return true;
         if (o == null)
             return false;
-        if (o instanceof Person) {
-            Person oPerson = (Person) o;
+        if (o instanceof Person oPerson) {
             return oPerson.getPersonID().equals(getPersonID()) &&
                     oPerson.getAssociatedUsername().equals(getAssociatedUsername()) &&
                     oPerson.getFirstName().equals(getFirstName()) &&
                     oPerson.getLastName().equals(getLastName()) &&
                     oPerson.getGender().equals(getGender()) &&
-                    oPerson.getFatherID().equals(getFatherID()) &&
-                    oPerson.getMotherID().equals(getMotherID()) &&
-                    oPerson.getSpouseID().equals(getSpouseID());
-
+                    ((getFatherID() == null && oPerson.getFatherID() == null) ||
+                            oPerson.getFatherID().equals(getFatherID())) &&
+                    ((getMotherID() == null && oPerson.getMotherID() == null) ||
+                            oPerson.getMotherID().equals(getMotherID())) &&
+                    ((getSpouseID() == null && oPerson.getSpouseID() == null) ||
+                            oPerson.getSpouseID().equals(getSpouseID()));
         }
         else {
             return false;

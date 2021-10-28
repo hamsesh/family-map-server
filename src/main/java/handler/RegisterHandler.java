@@ -41,33 +41,37 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 request = jsonDecoder.decodeRegister(data);
 
                 if (!request.isValidRequest()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     exchange.getRequestBody().close();
-                    exchange.getResponseBody().close();
-                    throw new IOException("Register request not valid");
+                    throw new IOException("Error: Register request not valid");
                 }
                 RegisterService registerService = new RegisterService(DB_PATH);
                 RegisterResult registerResult = registerService.register(request);
                 System.out.printf("Register process complete. Status: %s",
                         registerResult.isSuccess() ? "Success" : "Failure");
+
                 if (!registerResult.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                    //FIXME: specify problem
                     exchange.getRequestBody().close();
                     exchange.getResponseBody().close();
-                    return;
+                    throw new IOException("Error: " + registerResult.getErrorMessage());
                 }
 
                 FillRequest fillRequest = new FillRequest(registerResult.getUsername(), 4);
-
                 if (!fillRequest.isValidRequest()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
                     exchange.getRequestBody().close();
                     exchange.getResponseBody().close();
-                    throw new IOException("Fill request not valid");
+                    throw new IOException("Error: Fill request not valid");
                 }
                 FillService fillService = new FillService(DB_PATH);
                 FillResult fillResult = fillService.fill(fillRequest);
+                if (!fillResult.isSuccess()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    exchange.getRequestBody().close();
+                    exchange.getResponseBody().close();
+                    throw new IOException("Error: " + fillResult.getMessage());
+                }
 
                 Encoder jsonEncoder = new Encoder();
                 String resultData;

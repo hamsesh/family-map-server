@@ -73,7 +73,7 @@ public class PersonDAO {
             return new Person(personID, associatedUsername, firstName, lastName, gender, fatherID, motherID, spouseID);
         }
         catch (SQLException e) {
-            throw new DataAccessException("Unable to get person by given ID");
+            return null;
         }
         finally {
             if (rs != null) {

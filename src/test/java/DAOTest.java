@@ -171,8 +171,8 @@ public class DAOTest {
         personDAO.setConnection(db.open(TEST_DB_PATH));
         Person[] foundPersons = personDAO.getAllPersonsByUsername("michael_scott");
 
-        Assertions.assertEquals("ar5j92", foundPersons[0].getPersonID());
-        Assertions.assertEquals("mn2c89", foundPersons[1].getPersonID());
+        Assertions.assertEquals(newPerson, foundPersons[0]);
+        Assertions.assertEquals(newPerson2, foundPersons[1]);
         Assertions.assertNull(foundPersons[0].getFatherID());
 
         db.clearTables();
@@ -348,6 +348,50 @@ public class DAOTest {
         }
 
         Assertions.assertTrue(success);
+    }
+
+    @Test
+    @DisplayName("Get all events by username")
+    public void testGetEventsByUsername() throws DataAccessException {
+        Event newEvent = new Event("ar5j92", "michael_scott", "000000", 3f,
+                100f, "USA", "Provo", "death", 1999);
+        Event newEvent2 = new Event("mn2c89", "michael_scott", "000001", 5f,
+                4f, "Mexico", "Mexico City", "birth", 1950);
+
+        EventDAO eventDAO = new EventDAO(db.getConnection());
+        eventDAO.insert(newEvent);
+        eventDAO.insert(newEvent2);
+        db.close(true);
+
+        eventDAO.setConnection(db.open(TEST_DB_PATH));
+        Event[] foundEvents = eventDAO.getAllEventsByUsername("michael_scott");
+
+        Assertions.assertEquals(newEvent, foundEvents[0]);
+        Assertions.assertEquals(newEvent2, foundEvents[1]);
+
+        db.clearTables();
+        db.close(true);
+        db.open(TEST_DB_PATH);
+    }
+
+    @Test
+    @DisplayName("Get all events from invalid username")
+    public void testGetEventsInvalidUsername() throws DataAccessException {
+        Event newEvent = new Event("429217", "michael_scott", "43823f",
+                34f, 35f, "USA", "Salt Lake City", "birth", 1950);
+
+        EventDAO eventDAO = new EventDAO(db.getConnection());
+        eventDAO.insert(newEvent);
+        db.close(true);
+
+        eventDAO.setConnection(db.open(TEST_DB_PATH));
+        Event[] foundEvents = eventDAO.getAllEventsByUsername("invalid_username");
+
+        Assertions.assertNull(foundEvents);
+
+        db.clearTables();
+        db.close(true);
+        db.open(TEST_DB_PATH);
     }
 
     @Test

@@ -70,10 +70,6 @@ public class Event {
         return eventID;
     }
 
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
     public String getUsername() {
         return associatedUsername;
     }
@@ -94,48 +90,24 @@ public class Event {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
-    }
-
     public float getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
     }
 
     public String getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public String getCity() {
         return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getEventType() {
         return eventType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
     public int getYear() {
         return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     /**
@@ -149,8 +121,7 @@ public class Event {
             return true;
         if (o == null)
             return false;
-        if (o instanceof Event) {
-            Event oEvent = (Event) o;
+        if (o instanceof Event oEvent) {
             return oEvent.getEventID().equals(getEventID()) &&
                     oEvent.getUsername().equals(getUsername()) &&
                     oEvent.getPersonID().equals(getPersonID()) &&

@@ -13,8 +13,6 @@ import service.PersonService;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Handles person requests
@@ -84,7 +82,7 @@ public class PersonHandler extends Handler implements HttpHandler {
             }
         }
         catch (EncodeException | DataAccessException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(500, 0);
             throw new IOException(e.getMessage());
         }
         catch (RequestException e) {

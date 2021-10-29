@@ -22,7 +22,7 @@ public class FileHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         boolean success = false;
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("get")) {
+            if (exchange.getRequestMethod().equalsIgnoreCase("get")) {
                 String urlPath = exchange.getRequestURI().toString();
                 if (urlPath == null || urlPath.equals("/")) urlPath = "/index.html";
                 urlPath = "web" + urlPath;
@@ -51,7 +51,7 @@ public class FileHandler implements HttpHandler {
             }
         }
         catch (IOException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(500, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

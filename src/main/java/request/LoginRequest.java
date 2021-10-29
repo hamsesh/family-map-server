@@ -1,7 +1,5 @@
 package request;
 
-import result.LoginResult;
-
 /**
  * Request to server to login user
  */

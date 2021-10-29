@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Event;
-import model.Person;
 
 /**
  * Interfaces with events in database
@@ -99,7 +98,7 @@ public class EventDAO {
     public Event[] getAllEventsByUsername(String username) throws DataAccessException {
         String countSql = "select count(*) from events where username = '" + username + "'";
         String sql = "select * from events where username = '" + username + "'";
-        ResultSet rs = null;
+        ResultSet rs;
         Event[] foundEvents;
         int numEvents;
 
@@ -145,14 +144,6 @@ public class EventDAO {
             }
         }
         return foundEvents;
-    }
-
-    /**
-     * Delete all events in the database
-     * @throws DataAccessException on database failure or failure to delete
-     */
-    public void deleteEvents() throws DataAccessException {
-
     }
 
     /**

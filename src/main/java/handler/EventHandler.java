@@ -13,8 +13,6 @@ import service.EventService;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Handles event requests
@@ -55,9 +53,7 @@ public class EventHandler extends Handler implements HttpHandler {
                     Encoder jsonEncoder = new Encoder();
                     String jsonData = jsonEncoder.encodeEventID(eventIDResult);
                     exchange.getRequestBody().close();
-
                     writeResponseBody(exchange.getResponseBody(), jsonData);
-                    exchange.getResponseBody().close();
                 }
                 else {
                     // Get all events
@@ -75,8 +71,8 @@ public class EventHandler extends Handler implements HttpHandler {
                     exchange.getRequestBody().close();
                     System.out.println("Event process complete");
                     writeResponseBody(exchange.getResponseBody(), jsonData);
-                    exchange.getResponseBody().close();
                 }
+                exchange.getResponseBody().close();
             }
             else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
@@ -86,7 +82,7 @@ public class EventHandler extends Handler implements HttpHandler {
             }
         }
         catch (EncodeException | DataAccessException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(500, 0);
             throw new IOException(e.getMessage());
         }
         catch (RequestException e) {

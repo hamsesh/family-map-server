@@ -5,8 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import dao.DataAccessException;
 import json.*;
 import request.LoginRequest;
-import request.RegisterRequest;
-import request.RequestException;
 import result.LoginResult;
 import service.LoginService;
 

@@ -7,9 +7,6 @@ import dao.EventDAO;
 import model.Event;
 import result.EventIDResult;
 
-import java.text.Normalizer;
-
-
 /**
  * Performs eventID action
  */

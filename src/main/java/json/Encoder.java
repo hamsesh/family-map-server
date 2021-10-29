@@ -3,8 +3,6 @@ package json;
 import com.google.gson.*;
 import result.*;
 
-import javax.xml.transform.Result;
-
 /**
  * Encodes java object results into json strings
  */

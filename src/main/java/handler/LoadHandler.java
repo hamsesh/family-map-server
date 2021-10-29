@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import dao.DataAccessException;
 import json.*;
 import request.LoadRequest;
-import request.RegisterRequest;
 import result.ClearResult;
 import result.LoadResult;
 import service.ClearService;
@@ -31,7 +30,7 @@ public class LoadHandler extends Handler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+            if (exchange.getRequestMethod().equalsIgnoreCase("post")) {
                 System.out.println("Load request received");
                 ClearService clearService = new ClearService(DB_PATH);
                 ClearResult clearResult = clearService.clear();

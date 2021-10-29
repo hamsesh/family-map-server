@@ -4,10 +4,7 @@ import com.google.gson.*;
 import model.Location;
 import request.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.Normalizer;
-import java.util.Scanner;
 
 /**
  * Decodes json strings into java object requests

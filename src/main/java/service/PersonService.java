@@ -4,7 +4,6 @@ import dao.AuthTokenDAO;
 import dao.DataAccessException;
 import dao.Database;
 import dao.PersonDAO;
-import model.AuthToken;
 import model.Person;
 import result.PersonResult;
 

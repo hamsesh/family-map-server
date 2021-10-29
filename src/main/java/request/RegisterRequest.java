@@ -30,18 +30,6 @@ public class RegisterRequest {
     private String gender;
 
     /**
-     * Create new RegisterRequest and initialize data members
-     */
-    public RegisterRequest() {
-        username = null;
-        password = null;
-        email = null;
-        firstName = null;
-        lastName = null;
-        gender = null;
-    }
-
-    /**
      * Create new RegisterRequest with the following data members
      * @param username user's username
      * @param password user's password

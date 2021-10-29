@@ -16,14 +16,6 @@ public class ClearResult {
     /**
      * Create new ClearResult and initialize data members
      */
-    public ClearResult() {
-        message = null;
-        success = false;
-    }
-
-    /**
-     * Create new ClearResult and initialize data members
-     */
     public ClearResult(String message, boolean success) {
         this.message = message;
         this.success = success;

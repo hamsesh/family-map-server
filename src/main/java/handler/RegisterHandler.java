@@ -56,7 +56,7 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 if (registerResult.isSuccess()) {
                     FillRequest fillRequest = new FillRequest(registerResult.getUsername(), 4);
                     if (!fillRequest.isValidRequest()) {
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+                        exchange.sendResponseHeaders(500, 0);
                         exchange.getRequestBody().close();
                         exchange.getResponseBody().close();
                         throw new IOException("Error: Fill request not valid");
@@ -91,7 +91,7 @@ public class RegisterHandler extends Handler implements HttpHandler {
             }
         }
         catch (EncodeException | DataAccessException | SQLException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(500, 0);
             e.printStackTrace();
             exchange.getRequestBody().close();
             exchange.getResponseBody().close();

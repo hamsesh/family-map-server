@@ -57,10 +57,6 @@ public class User {
         return personID;
     }
 
-    public void setUserID(String userID) {
-        this.personID = userID;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -89,20 +85,12 @@ public class User {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getGender() {
         return gender;
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setGender(String gender) {

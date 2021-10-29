@@ -4,7 +4,6 @@ import dao.AuthTokenDAO;
 import dao.DataAccessException;
 import dao.Database;
 import dao.UserDAO;
-import json.Encoder;
 import model.AuthToken;
 import model.User;
 import request.LoginRequest;

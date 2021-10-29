@@ -53,7 +53,7 @@ public class FillHandler extends Handler implements HttpHandler {
             }
         }
         catch (EncodeException | DataAccessException | SQLException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(500, 0);
             throw new IOException(e.getMessage());
         }
         catch (RequestException e) {

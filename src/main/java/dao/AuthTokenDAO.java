@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.AuthToken;
-import model.User;
 
 /**
  * Interfaces with auth tokens in database

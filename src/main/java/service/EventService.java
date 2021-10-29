@@ -4,7 +4,6 @@ import dao.AuthTokenDAO;
 import dao.DataAccessException;
 import dao.Database;
 import dao.EventDAO;
-import model.AuthToken;
 import model.Event;
 import result.EventResult;
 

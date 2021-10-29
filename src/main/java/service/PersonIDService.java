@@ -6,7 +6,6 @@ import dao.Database;
 import dao.PersonDAO;
 import model.Person;
 import result.PersonIDResult;
-import result.PersonResult;
 
 /**
  * Performs personID action

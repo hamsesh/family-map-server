@@ -1,5 +1,4 @@
 import dao.*;
-import model.AuthToken;
 import model.Event;
 import model.Person;
 import model.User;
@@ -20,7 +19,7 @@ public class ServiceTest {
 
     // Create db file and open connection
     @BeforeAll
-    public static void setUp() throws DataAccessException {
+    public static void setUp() {
         db = new Database();
     }
 
@@ -33,25 +32,39 @@ public class ServiceTest {
     }
 
     @Test
-    @DisplayName("Successful register test")
-    public void testRegister() throws DataAccessException {
-        RegisterRequest request = new RegisterRequest("jimbob-77", "password", "test@test.com",
-                "Jim", "Bob", "m");
+    @DisplayName("Successful register")
+    public void testRegister() throws DataAccessException, SQLException {
+        RegisterRequest request = new RegisterRequest("yellow-banana-77", "password", "test@test.com",
+                "Yellow", "Banana", "m");
         RegisterResult response;
         RegisterService service = new RegisterService(TEST_DB_PATH);
         response = service.register(request);
         Assertions.assertTrue(response.isSuccess());
 
         UserDAO userDAO = new UserDAO(db.open(TEST_DB_PATH));
-        User foundUser = userDAO.getUserByUsername("jimbob-77");
+        User foundUser = userDAO.getUserByUsername("yellow-banana-77");
 
         AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
-        String authUsername = authTokenDAO.validate(response.getAuthToken());
+        String authUsername = authTokenDAO.validate(response.getAuthtoken());
 
         db.close(false);
 
         Assertions.assertNotNull(foundUser);
-        Assertions.assertEquals(authUsername, "jimbob-77");
+        Assertions.assertEquals(authUsername, "yellow-banana-77");
+    }
+
+    @Test
+    @DisplayName("Successful register")
+    public void testReRegister() throws DataAccessException, SQLException {
+        RegisterRequest request = new RegisterRequest("jimbob-77", "password", "test@test.com",
+                "Jim", "Bob", "m");
+        RegisterRequest request2 = new RegisterRequest("jimbob-77", "test", "test@test.com",
+                "Bob", "Jim", "m");
+        RegisterResult response;
+        RegisterService service = new RegisterService(TEST_DB_PATH);
+        service.register(request);
+        response = service.register(request2);
+        Assertions.assertFalse(response.isSuccess());
     }
 
     @Test
@@ -73,7 +86,6 @@ public class ServiceTest {
             Person[] familyTree = personDAO.getAllPersonsByUsername("wallabee-cricket");
             Event[] familyEvents = eventDAO.getAllEventsByUsername("wallabee-cricket");
 
-            Person firstGen = personDAO.getPersonByID(familyTree[0].getPersonID());
             db.close(false);
 
             Assertions.assertEquals(1, familyTree.length);
@@ -108,7 +120,6 @@ public class ServiceTest {
 
             Person firstGen = personDAO.getPersonByID(familyTree[0].getPersonID());
             Person secondGen = personDAO.getPersonByID(firstGen.getMotherID());
-            Person thirdGen = personDAO.getPersonByID(secondGen.getFatherID());
             db.close(false);
 
             Assertions.assertEquals(7, familyTree.length);
@@ -325,7 +336,7 @@ public class ServiceTest {
         Assertions.assertTrue(result.isSuccess());
         Assertions.assertNotNull(result.getPersonID());
         Assertions.assertNotNull(result.getUsername());
-        Assertions.assertNotNull(result.getAuthToken());
+        Assertions.assertNotNull(result.getAuthtoken());
         Assertions.assertNull(result.getMessage());
     }
 
@@ -450,5 +461,62 @@ public class ServiceTest {
         Assertions.assertFalse(personIDResult.isSuccess());
         Assertions.assertNotNull(personIDResult.getMessage());
         Assertions.assertNull(personIDResult.getPersonID());
+    }
+
+    @Test
+    @DisplayName("Valid load")
+    public void testLoad() throws DataAccessException, SQLException {
+        try {
+            User[] users = new User[2];
+            Person[] persons = new Person[2];
+            Event[] events = new Event[2];
+            users[0] = new User("jim_halpert", "password", "jim@yahoo.com", "Jim",
+                    "Halpert", "m", "ae4f59");
+            users[1] = new User("michael_scott", "pazzword", "michael@yahoo.com",
+                    "Michael", "Scott", "m", "rf3c93");
+            persons[0] = new Person("ar5j92", "jim_halpert", "Old",
+                    "McDonald", "m", null, null, null);
+            persons[1] = new Person("mn2c89", "michael_scott", "Abraham",
+                    "Lincoln", "m", "ar5j92", null, null);
+            events[0] = new Event("jm1q90", "michael_scott", "mn2c89", 38.89037f,
+                    -77.03196f, "USA", "Washington D.C.", "death", 1865);
+            events[1] = new Event("wr8m89", "jim_halpert", "ar5j92", 34.115784f,
+                    -117.302399f, "USA", "San Bernadino", "birth", 1940);
+            LoadRequest loadRequest = new LoadRequest(users, persons, events);
+            LoadService loadService = new LoadService(TEST_DB_PATH);
+            LoadResult loadResult = loadService.load(loadRequest);
+
+            Assertions.assertTrue(loadResult.isSuccess());
+            UserDAO userDAO = new UserDAO(db.open(TEST_DB_PATH));
+            Assertions.assertNotNull(userDAO.getUserByUsername("jim_halpert"));
+
+            db.clearTables();
+            db.close(true);
+        }
+        finally {
+            if (!db.isClosed()) {
+                db.close(false);
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Test bad load")
+    public void testBadLoad() throws SQLException, DataAccessException {
+        try {
+            User[] users = new User[1];
+            users[0] = new User(null, null, null, null,
+                    null, null, null);
+            LoadRequest loadRequest = new LoadRequest(users, null, null);
+            LoadService loadService = new LoadService(TEST_DB_PATH);
+            LoadResult loadResult = loadService.load(loadRequest);
+
+            Assertions.assertFalse(loadResult.isSuccess());
+        }
+        finally {
+            if (!db.isClosed()) {
+                db.close(false);
+            }
+        }
     }
 }

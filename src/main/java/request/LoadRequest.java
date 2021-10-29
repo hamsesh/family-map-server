@@ -22,12 +22,15 @@ public class LoadRequest {
     private Event[] events;
 
     /**
-     * Create new LoadRequest and initialize data members
+     * Create new LoadRequest object with the following data members
+     * @param users Array of user objects to load
+     * @param persons Array of person objects to load
+     * @param events Array of event objects to load
      */
-    public LoadRequest() {
-        users = null;
-        persons = null;
-        events = null;
+    public LoadRequest(User[] users, Person[] persons, Event[] events) {
+        this.users = users;
+        this.persons = persons;
+        this.events = events;
     }
 
     public User[] getUsers() {
@@ -61,5 +64,9 @@ public class LoadRequest {
             throw new RequestException("No events found");
         }
         this.events = events;
+    }
+
+    public boolean isValidRequest() {
+        return this.users != null && this.persons != null && this.events != null;
     }
 }

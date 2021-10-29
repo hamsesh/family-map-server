@@ -188,36 +188,19 @@ public class FillService extends Service {
                 marriageLocation.getLatitude(), marriageLocation.getLongitude(), marriageLocation.getCountry(),
                 marriageLocation.getCity(), "marriage", marriageYear);
 
-        // Assume parents and grandparents are still alive
-        if (generations < 3) {
-            Location mBaptismLocation = locations[rng.nextInt(locations.length)];
-            Location fBaptismLocation = locations[rng.nextInt(locations.length)];
-            Event mBaptism = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), mother.getPersonID(),
-                    fBirthLocation.getLatitude(), fBirthLocation.getLongitude(), fBirthLocation.getCountry(),
-                    fBirthLocation.getCity(), "baptism",
-                    rng.nextInt(mBirth.getYear() + 8, childBirth.getYear()));
-            Event fBaptism = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), father.getPersonID(),
-                    fBirthLocation.getLatitude(), fBirthLocation.getLongitude(), fBirthLocation.getCountry(),
-                    fBirthLocation.getCity(), "baptism",
-                    rng.nextInt(fBirth.getYear() + 8, childBirth.getYear()));
-            eventDAO.insert(mBaptism);
-            eventDAO.insert(fBaptism);
-            numEventsAdded += 2;
-        }
-        else {
-            Location deathLocation = locations[rng.nextInt(locations.length)];
-            Event mDeath = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), mother.getPersonID(),
-                    deathLocation.getLatitude(), deathLocation.getLongitude(), deathLocation.getCountry(),
-                    fBirthLocation.getCity(), "death",
-                    rng.nextInt(childBirth.getYear(), mBirth.getYear() + 100));
-            Event fDeath = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), father.getPersonID(),
-                    deathLocation.getLatitude(), deathLocation.getLongitude(), deathLocation.getCountry(),
-                    deathLocation.getCity(), "death",
-                    rng.nextInt(childBirth.getYear(), fBirth.getYear() + 100));
-            eventDAO.insert(mDeath);
-            eventDAO.insert(fDeath);
-            numEventsAdded += 2;
-        }
+        Location deathLocation = locations[rng.nextInt(locations.length)];
+        Event mDeath = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), mother.getPersonID(),
+                deathLocation.getLatitude(), deathLocation.getLongitude(), deathLocation.getCountry(),
+                fBirthLocation.getCity(), "death",
+                rng.nextInt(childBirth.getYear(), mBirth.getYear() + 100));
+        Event fDeath = new Event(UUID.randomUUID().toString(), child.getAssociatedUsername(), father.getPersonID(),
+                deathLocation.getLatitude(), deathLocation.getLongitude(), deathLocation.getCountry(),
+                deathLocation.getCity(), "death",
+                rng.nextInt(childBirth.getYear(), fBirth.getYear() + 100));
+        eventDAO.insert(mDeath);
+        eventDAO.insert(fDeath);
+        numEventsAdded += 2;
+
 
 
         personDAO.insert(child);

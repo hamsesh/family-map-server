@@ -47,6 +47,7 @@ public class Server {
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: java Server.java <port number>");
+            return;
         }
         String portNumber = args[0];
         new Server().run(portNumber);

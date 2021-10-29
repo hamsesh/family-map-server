@@ -15,10 +15,12 @@ public class LoadResult {
 
     /**
      * Create new LoadResult and initialize data members
+     * @param message Message from request
+     * @param success Success status
      */
-    public LoadResult() {
-        message = null;
-        success = false;
+    public LoadResult(String message, boolean success) {
+        this.message = message;
+        this.success = success;
     }
 
     public String getMessage() {

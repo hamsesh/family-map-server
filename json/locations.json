@@ -1,4 +1,5 @@
-[
+{
+"data": [
     {
       "country": "Canada",
       "city": "Alert",
@@ -5868,3 +5869,4 @@
       "longitude": 0.0
     }
 ]
+}

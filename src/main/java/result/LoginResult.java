@@ -7,7 +7,7 @@ public class LoginResult {
     /**
      * Generated authToken
      */
-    private String authToken;
+    private String authtoken;
     /**
      * User's username
      */
@@ -27,26 +27,26 @@ public class LoginResult {
 
     /**
      *
-     * @param authToken AuthToken genereated
+     * @param authtoken AuthToken genereated
      * @param username Associated username
      * @param personID Associated personID
      * @param success Success status
      * @param errorMessage Generated error message
      */
-    public LoginResult(String authToken, String username, String personID, String errorMessage, boolean success) {
-        this.authToken = authToken;
+    public LoginResult(String authtoken, String username, String personID, String errorMessage, boolean success) {
+        this.authtoken = authtoken;
         this.username = username;
         this.personID = personID;
         this.message = errorMessage;
         this.success = success;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public String getAuthtoken() {
+        return authtoken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAuthtoken(String authtoken) {
+        this.authtoken = authtoken;
     }
 
     public String getUsername() {

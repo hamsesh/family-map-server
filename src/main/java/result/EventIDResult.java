@@ -7,11 +7,15 @@ public class EventIDResult {
     /**
      * Associated username
      */
-    private String username;
+    private String associatedUsername;
     /**
      * Unique eventID
      */
     private String eventID;
+    /**
+     * ID of the person this event belongs to
+     */
+    private String personID;
     /**
      * Location in latitude
      */
@@ -47,7 +51,7 @@ public class EventIDResult {
 
     /**
      * Create new EventIDResult and initialize data members
-     * @param username Associated username
+     * @param associatedUsername Associated username
      * @param eventID Event's unique ID
      * @param latitude Location in latitude
      * @param longitude Location in longitude
@@ -58,10 +62,11 @@ public class EventIDResult {
      * @param message Message generated on error
      * @param success Status of request
      */
-    public EventIDResult(String username, String eventID, float latitude, float longitude, String country,
-                         String city, String eventType, int year, String message, boolean success) {
-        this.username = username;
+    public EventIDResult(String associatedUsername, String eventID, String personID, float latitude, float longitude,
+                         String country, String city, String eventType, int year, String message, boolean success) {
+        this.associatedUsername = associatedUsername;
         this.eventID = eventID;
+        this.personID = personID;
         this.latitude = latitude;
         this.longitude = longitude;
         this.country = country;
@@ -78,7 +83,7 @@ public class EventIDResult {
      * @param success Status of request
      */
     public EventIDResult(String message, boolean success) {
-        username = null;
+        associatedUsername = null;
         eventID = null;
         latitude = 0f;
         longitude = 0f;
@@ -90,12 +95,12 @@ public class EventIDResult {
         this.success = success;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAssociatedUsername() {
+        return associatedUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAssociatedUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 
     public String getEventID() {

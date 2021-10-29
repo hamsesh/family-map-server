@@ -45,11 +45,17 @@ public class EventHandler extends Handler implements HttpHandler {
                 if (eventID != null) {
                     EventIDService eventIDService = new EventIDService(DB_PATH);
                     EventIDResult eventIDResult = eventIDService.eventID(token, eventID);
+                    if (!eventIDResult.isSuccess()) {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    }
+                    else {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                    }
 
                     Encoder jsonEncoder = new Encoder();
                     String jsonData = jsonEncoder.encodeEventID(eventIDResult);
                     exchange.getRequestBody().close();
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
+
                     writeResponseBody(exchange.getResponseBody(), jsonData);
                     exchange.getResponseBody().close();
                 }
@@ -57,12 +63,17 @@ public class EventHandler extends Handler implements HttpHandler {
                     // Get all events
                     EventService eventService = new EventService(DB_PATH);
                     EventResult eventResult = eventService.event(token);
+                    if (!eventResult.isSuccess()) {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    }
+                    else {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                    }
 
                     Encoder jsonEncoder = new Encoder();
                     String jsonData = jsonEncoder.encodeEvent(eventResult);
                     exchange.getRequestBody().close();
                     System.out.println("Event process complete");
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
                     writeResponseBody(exchange.getResponseBody(), jsonData);
                     exchange.getResponseBody().close();
                 }

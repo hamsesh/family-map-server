@@ -8,6 +8,7 @@ import request.RegisterRequest;
 import result.RegisterResult;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
 
 /**
@@ -28,7 +29,7 @@ public class RegisterService extends Service {
      * @param request Register request decoded from json
      * @return the result of request
      */
-    public RegisterResult register(RegisterRequest request) throws DataAccessException {
+    public RegisterResult register(RegisterRequest request) throws DataAccessException, SQLException {
         String token = generateAuthToken();
         String personID = UUID.randomUUID().toString();
         Database db = new Database();
@@ -46,8 +47,11 @@ public class RegisterService extends Service {
             db.close(true);
         }
         catch (DataAccessException e) {
-            db.close(false);
-            return new RegisterResult(null, null, null, false, e.getMessage());
+                if (!db.isClosed()) {
+                    db.close(false);
+                }
+            return new RegisterResult(null, null, null, false,
+                    "Error: " + e.getMessage());
         }
         return new RegisterResult(token, request.getUsername(), personID, true, null);
     }

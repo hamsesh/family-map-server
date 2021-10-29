@@ -84,7 +84,7 @@ public class Encoder {
      * @return encoded json string
      * @throws EncodeException on invalid object or gson exception
      */
-    public String encodeLoad(Result result) throws EncodeException {
+    public String encodeLoad(LoadResult result) throws EncodeException {
         Gson gson = new Gson();
         try {
             return gson.toJson(result);

@@ -7,6 +7,8 @@ import dao.EventDAO;
 import model.Event;
 import result.EventIDResult;
 
+import java.text.Normalizer;
+
 
 /**
  * Performs eventID action
@@ -40,7 +42,7 @@ public class EventIDService extends Service{
                 return new EventIDResult("Error: Unable to find event with given ID", false);
             }
 
-            return new EventIDResult(event.getUsername(), event.getEventID(), event.getLatitude(),
+            return new EventIDResult(event.getUsername(), event.getEventID(), event.getPersonID(), event.getLatitude(),
                     event.getLongitude(), event.getCountry(), event.getCity(), event.getEventType(),
                     event.getYear(), null, true);
         }

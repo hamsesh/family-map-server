@@ -5,7 +5,6 @@ import model.User;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.sql.Connection;
 
 import dao.*;
 

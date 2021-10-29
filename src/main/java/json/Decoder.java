@@ -24,8 +24,14 @@ public class Decoder {
      * @return LoadRequest object generated from json
      * @throws DecodeException on invalid json
      */
-    public LoadRequest decodeClear(String jsonString) throws DecodeException {
-        return null;
+    public LoadRequest decodeLoad(String jsonString) throws DecodeException {
+        Gson gson = new Gson();
+        try {
+            return gson.fromJson(jsonString, LoadRequest.class);
+        }
+        catch (JsonSyntaxException e) {
+            throw new DecodeException(e.getMessage());
+        }
     }
 
     /**
@@ -63,7 +69,8 @@ public class Decoder {
     public String[] parseNames(String jsonString) throws DecodeException {
         Gson gson = new Gson();
         try {
-            return gson.fromJson(jsonString, String[].class);
+            NameData names = gson.fromJson(jsonString, NameData.class);
+            return names.data;
         }
         catch (JsonSyntaxException e) {
             throw new DecodeException(e.getMessage());
@@ -74,10 +81,19 @@ public class Decoder {
         String decomposed = Normalizer.normalize(jsonString, Normalizer.Form.NFC);
         Gson gson = new Gson();
         try {
-            return gson.fromJson(jsonString, Location[].class);
+            LocationData locations = gson.fromJson(decomposed, LocationData.class);
+            return locations.data;
         }
         catch (JsonSyntaxException e) {
             throw new DecodeException(e.getMessage());
         }
     }
+}
+
+class LocationData {
+    public Location[] data;
+}
+
+class NameData {
+    public String[] data;
 }

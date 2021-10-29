@@ -5,9 +5,9 @@ package result;
  */
 public class RegisterResult {
     /**
-     * Generated authToken
+     * Generated authtoken
      */
-    private String authToken;
+    private String authtoken;
     /**
      * User's username
      */
@@ -27,27 +27,27 @@ public class RegisterResult {
 
     /**
      * Create new RegisterResult with the following data members
-     * @param authToken Resulting auth token
+     * @param authtoken Resulting auth token
      * @param username Associated username
      * @param personID Associated person ID
      * @param success Success status
      * @param message Generated error message if not successful
      */
-    public RegisterResult(String authToken, String username, String personID, boolean success,
+    public RegisterResult(String authtoken, String username, String personID, boolean success,
                           String message) {
-        this.authToken = authToken;
+        this.authtoken = authtoken;
         this.username = username;
         this.personID = personID;
         this.message = message;
         this.success = success;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public String getAuthtoken() {
+        return authtoken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAuthtoken(String authtoken) {
+        this.authtoken = authtoken;
     }
 
     public String getUsername() {

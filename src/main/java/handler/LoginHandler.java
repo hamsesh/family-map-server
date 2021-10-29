@@ -47,10 +47,15 @@ public class LoginHandler extends Handler implements HttpHandler {
                 System.out.printf("User: %s%n", loginRequest.getUsername());
                 LoginService loginService = new LoginService(DB_PATH);
                 LoginResult loginResult = loginService.login(loginRequest);
+                if (!loginResult.isSuccess()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                }
+                else {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                }
 
                 Encoder jsonEncoder = new Encoder();
                 String jsonData = jsonEncoder.encodeLogin(loginResult);
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
                 writeResponseBody(exchange.getResponseBody(), jsonData);
                 exchange.getRequestBody().close();
                 exchange.getResponseBody().close();

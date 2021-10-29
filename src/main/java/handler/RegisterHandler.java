@@ -72,12 +72,15 @@ public class RegisterHandler extends Handler implements HttpHandler {
                         exchange.getResponseBody().close();
                         throw new IOException("Error: " + fillResult.getMessage());
                     }
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                }
+                else {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                 }
 
                 Encoder jsonEncoder = new Encoder();
                 String jsonData = jsonEncoder.encodeRegister(registerResult);
                 exchange.getRequestBody().close();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
                 writeResponseBody(exchange.getResponseBody(), jsonData);
                 exchange.getResponseBody().close();
             }

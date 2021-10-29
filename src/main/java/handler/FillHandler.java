@@ -2,6 +2,7 @@ package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dao.DataAccessException;
 import json.*;
 import request.FillRequest;
 import request.RequestException;
@@ -10,6 +11,7 @@ import service.FillService;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -50,7 +52,7 @@ public class FillHandler extends Handler implements HttpHandler {
                 throw new IOException("Error: Invalid HTTP Request");
             }
         }
-        catch (EncodeException e) {
+        catch (EncodeException | DataAccessException | SQLException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             throw new IOException(e.getMessage());
         }

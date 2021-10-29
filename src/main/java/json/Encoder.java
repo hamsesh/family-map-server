@@ -37,7 +37,13 @@ public class Encoder {
      * @throws EncodeException on invalid object or gson exception
      */
     public String encodeEventID(EventIDResult result) throws EncodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(result);
+        }
+        catch (JsonIOException e) {
+            throw new EncodeException();
+        }
     }
 
     /**
@@ -47,7 +53,13 @@ public class Encoder {
      * @throws EncodeException on invalid object or gson exception
      */
     public String encodeEvent(EventResult result) throws EncodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(result);
+        }
+        catch (JsonIOException e) {
+            throw new EncodeException();
+        }
     }
 
     /**
@@ -73,7 +85,13 @@ public class Encoder {
      * @throws EncodeException on invalid object or gson exception
      */
     public String encodeLoad(Result result) throws EncodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(result);
+        }
+        catch (JsonIOException e) {
+            throw new EncodeException();
+        }
     }
 
     /**

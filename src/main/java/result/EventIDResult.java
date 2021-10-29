@@ -37,18 +37,47 @@ public class EventIDResult {
      */
     private int year;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     private boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
      * Create new EventIDResult and initialize data members
+     * @param username Associated username
+     * @param eventID Event's unique ID
+     * @param latitude Location in latitude
+     * @param longitude Location in longitude
+     * @param country Location by country
+     * @param city Location by city
+     * @param eventType Type of event
+     * @param year Year of the event
+     * @param message Message generated on error
+     * @param success Status of request
      */
-    public EventIDResult() {
+    public EventIDResult(String username, String eventID, float latitude, float longitude, String country,
+                         String city, String eventType, int year, String message, boolean success) {
+        this.username = username;
+        this.eventID = eventID;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.country = country;
+        this.city = city;
+        this.eventType = eventType;
+        this.year = year;
+        this.message = message;
+        this.success = success;
+    }
+
+    /**
+     * Create new EventIDResult and initialize data members
+     * @param message Message generated on error
+     * @param success Status of request
+     */
+    public EventIDResult(String message, boolean success) {
         username = null;
         eventID = null;
         latitude = 0f;
@@ -57,8 +86,8 @@ public class EventIDResult {
         city = null;
         eventType = null;
         year = 0;
-        success = false;
-        errorMessage = null;
+        this.message = message;
+        this.success = success;
     }
 
     public String getUsername() {
@@ -125,19 +154,19 @@ public class EventIDResult {
         this.year = year;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

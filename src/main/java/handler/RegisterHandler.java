@@ -2,6 +2,7 @@ package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dao.DataAccessException;
 import json.*;
 import request.FillRequest;
 import request.RegisterRequest;
@@ -13,6 +14,7 @@ import result.RegisterResult;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 
 /**
  * Handles register requests
@@ -45,36 +47,31 @@ public class RegisterHandler extends Handler implements HttpHandler {
                     exchange.getRequestBody().close();
                     throw new IOException("Error: Register request not valid");
                 }
-                System.out.println("Valid login request");
+                System.out.println("Valid register request");
                 RegisterService registerService = new RegisterService(DB_PATH);
                 RegisterResult registerResult = registerService.register(request);
                 System.out.printf("Register process complete. Status: %s%n",
                         registerResult.isSuccess() ? "Success" : "Failure");
 
-                if (!registerResult.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                    exchange.getRequestBody().close();
-                    exchange.getResponseBody().close();
-                    throw new IOException("Error: " + registerResult.getErrorMessage());
-                }
+                if (registerResult.isSuccess()) {
+                    FillRequest fillRequest = new FillRequest(registerResult.getUsername(), 4);
+                    if (!fillRequest.isValidRequest()) {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+                        exchange.getRequestBody().close();
+                        exchange.getResponseBody().close();
+                        throw new IOException("Error: Fill request not valid");
+                    }
+                    FillService fillService = new FillService(DB_PATH);
+                    FillResult fillResult = fillService.fill(fillRequest);
+                    System.out.printf("Fill process complete. Status: %s%n",
+                            fillResult.isSuccess() ? "Success" : "Failure");
 
-                FillRequest fillRequest = new FillRequest(registerResult.getUsername(), 4);
-                if (!fillRequest.isValidRequest()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-                    exchange.getRequestBody().close();
-                    exchange.getResponseBody().close();
-                    throw new IOException("Error: Fill request not valid");
-                }
-                FillService fillService = new FillService(DB_PATH);
-                FillResult fillResult = fillService.fill(fillRequest);
-                System.out.printf("Fill process complete. Status: %s%n",
-                        fillResult.isSuccess() ? "Success" : "Failure");
-
-                if (!fillResult.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                    exchange.getRequestBody().close();
-                    exchange.getResponseBody().close();
-                    throw new IOException("Error: " + fillResult.getMessage());
+                    if (!fillResult.isSuccess()) {
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                        exchange.getRequestBody().close();
+                        exchange.getResponseBody().close();
+                        throw new IOException("Error: " + fillResult.getMessage());
+                    }
                 }
 
                 Encoder jsonEncoder = new Encoder();
@@ -90,7 +87,7 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 throw new IOException("Error: Invalid HTTP Request");
             }
         }
-        catch (EncodeException e) {
+        catch (EncodeException | DataAccessException | SQLException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             e.printStackTrace();
             exchange.getRequestBody().close();

@@ -5,13 +5,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import dao.DataAccessException;
 import json.*;
-import model.AuthToken;
-import request.FillRequest;
 import request.RequestException;
-import result.FillResult;
 import result.PersonIDResult;
 import result.PersonResult;
-import service.FillService;
 import service.PersonIDService;
 import service.PersonService;
 
@@ -44,7 +40,7 @@ public class PersonHandler extends Handler implements HttpHandler {
                 }
                 String token = reqHeaders.getFirst("Authorization");
                 String uri = exchange.getRequestURI().getPath();
-                String personID = parsePersonID(uri);
+                String personID = parseID(uri);
 
                 if (personID != null) {
                     PersonIDService personIDService = new PersonIDService(DB_PATH);
@@ -65,6 +61,7 @@ public class PersonHandler extends Handler implements HttpHandler {
                     Encoder jsonEncoder = new Encoder();
                     String jsonData = jsonEncoder.encodePerson(personResult);
                     exchange.getRequestBody().close();
+                    System.out.println("Person process complete");
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
                     writeResponseBody(exchange.getResponseBody(), jsonData);
                     exchange.getResponseBody().close();
@@ -89,20 +86,5 @@ public class PersonHandler extends Handler implements HttpHandler {
             exchange.getRequestBody().close();
             exchange.getResponseBody().close();
         }
-    }
-
-    private String parsePersonID(String uri) throws RequestException {
-        Scanner scnr = new Scanner(uri).useDelimiter("/");
-        ArrayList<String> params = new ArrayList<>();
-        while (scnr.hasNext()) {
-            params.add(scnr.next());
-        }
-        if (params.size() > 2) {
-            throw new RequestException("Error: Too many parameters in URI");
-        }
-        else if (params.size() < 2) {
-            return null;
-        }
-        return params.get(1);
     }
 }

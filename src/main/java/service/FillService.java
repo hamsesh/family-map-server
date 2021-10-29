@@ -14,6 +14,7 @@ import result.FillResult;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.UUID;
 
@@ -65,19 +66,23 @@ public class FillService extends Service {
      * @param request FillRequest containing username and number of generations to fill
      * @return the result of the fill request
      */
-    public FillResult fill(FillRequest request) throws RequestException {
+    public FillResult fill(FillRequest request) throws RequestException, DataAccessException, SQLException {
         if (request.getGenerations() < 0) {
             throw new RequestException("Error: Invalid number of generations");
         }
+        Database db = new Database();
         try {
-            Database db = new Database();
-            Connection conn = db.open(dbPath);
+            Connection conn = db.openWithForeignKey(dbPath);
             PersonDAO personDAO = new PersonDAO(conn);
-            EventDAO eventDAO = new EventDAO(conn);
+
 
             // Delete all persons related to user
             // Delete events on cascade
             personDAO.deletePersonsByUsername(request.getUsername());
+            db.close(true);
+            conn = db.open(dbPath);
+            personDAO.setConnection(conn);
+            EventDAO eventDAO = new EventDAO(conn);
 
             // Create person object for user
             UserDAO userDAO = new UserDAO(db.getConnection());
@@ -108,6 +113,11 @@ public class FillService extends Service {
             e.printStackTrace();
             return new FillResult("Error: Unable to generate random data", false);
         }
+        finally {
+            if (!db.isClosed()) {
+                db.close(false);
+            }
+        }
     }
 
     /**
@@ -134,7 +144,6 @@ public class FillService extends Service {
      * @param childBirth Birth event of the child
      * @param personDAO PersonDAO connection for adding persons
      * @param eventDAO EventDAO connection for adding events
-     * @throws DataAccessException
      */
     private void addParents(Person child, int generations, Event childBirth,
                             PersonDAO personDAO, EventDAO eventDAO) throws DataAccessException {

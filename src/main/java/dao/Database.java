@@ -111,7 +111,6 @@ public class Database {
                 //will rollback any changes we made during this connection
                 conn.rollback();
             }
-
             conn.close();
             conn = null;
         } catch (SQLException e) {
@@ -139,6 +138,10 @@ public class Database {
         catch (SQLException e) {
             throw new DataAccessException("Unable to clear tables");
         }
+    }
+
+    public boolean isClosed() throws SQLException {
+        return this.conn == null || this.conn.isClosed();
     }
 }
 

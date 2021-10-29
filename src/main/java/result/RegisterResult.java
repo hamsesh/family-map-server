@@ -1,7 +1,5 @@
 package result;
 
-import model.Person;
-
 /**
  * Result of register request
  */
@@ -19,13 +17,13 @@ public class RegisterResult {
      */
     private String personID;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
      * Create new RegisterResult with the following data members
@@ -33,15 +31,15 @@ public class RegisterResult {
      * @param username Associated username
      * @param personID Associated person ID
      * @param success Success status
-     * @param errorMessage Generated error message if not successful
+     * @param message Generated error message if not successful
      */
     public RegisterResult(String authToken, String username, String personID, boolean success,
-                          String errorMessage) {
+                          String message) {
         this.authToken = authToken;
         this.username = username;
         this.personID = personID;
+        this.message = message;
         this.success = success;
-        this.errorMessage = errorMessage;
     }
 
     public String getAuthToken() {
@@ -68,19 +66,19 @@ public class RegisterResult {
         this.personID = personID;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

@@ -11,8 +11,7 @@ create table users
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     gender char(1) not null,
-    person_id varchar(255) not null,
-    foreign key(person_id) references persons(person_id)
+    person_id varchar(255) not null
 );
 
 create table persons
@@ -26,9 +25,9 @@ create table persons
     mother_id varchar(255),
     spouse_id varchar(255),
     foreign key(username) references users(username) on delete cascade,
-    foreign key(father_id) references persons(person_id) on delete set null,
-    foreign key(mother_id) references persons(person_id) on delete set null,
-    foreign key(spouse_id) references persons(person_id) on delete set null
+    foreign key(father_id) references persons(person_id) on delete set null on update cascade,
+    foreign key(mother_id) references persons(person_id) on delete set null on update cascade,
+    foreign key(spouse_id) references persons(person_id) on delete set null on update cascade
 );
 
 create table events

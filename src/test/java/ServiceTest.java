@@ -10,6 +10,7 @@ import service.*;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -51,6 +52,39 @@ public class ServiceTest {
 
         Assertions.assertNotNull(foundUser);
         Assertions.assertEquals(authUsername, "jimbob-77");
+    }
+
+    @Test
+    @DisplayName("Fill zero generations")
+    public void testFillZeroGenerations() throws DataAccessException {
+        Connection conn = db.open(TEST_DB_PATH);
+        UserDAO userDAO = new UserDAO(conn);
+        userDAO.insert(new User("wallabee-cricket", "password", "wallabee@test.com",
+                "Wallabee", "Cricket", "m", UUID.randomUUID().toString()));
+        db.close(true);
+
+        try {
+            FillRequest fillRequest = new FillRequest("wallabee-cricket", 0);
+            FillService fillService = new FillService(TEST_DB_PATH);
+            fillService.fill(fillRequest);
+            conn = db.open(TEST_DB_PATH);
+            PersonDAO personDAO = new PersonDAO(conn);
+            EventDAO eventDAO = new EventDAO(conn);
+            Person[] familyTree = personDAO.getAllPersonsByUsername("wallabee-cricket");
+            Event[] familyEvents = eventDAO.getAllEventsByUsername("wallabee-cricket");
+
+            Person firstGen = personDAO.getPersonByID(familyTree[0].getPersonID());
+            db.close(false);
+
+            Assertions.assertEquals(1, familyTree.length);
+
+            // Test valid event
+            Assertions.assertEquals(1, familyEvents.length);
+            Assertions.assertEquals(familyEvents[0].getEventType(), "birth");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -121,14 +155,13 @@ public class ServiceTest {
             }
         }
         catch (Exception e) {
-            db.close(false);
             e.printStackTrace();
         }
     }
 
     @Test
     @DisplayName("Fill five generations")
-    public void testFillFiveGenerations() throws DataAccessException {
+    public void testFillFiveGenerations() throws DataAccessException, SQLException {
         Connection conn = db.open(TEST_DB_PATH);
         UserDAO userDAO = new UserDAO(conn);
         userDAO.insert(new User("jiminy-cricket", "password", "jiminy@test.com",
@@ -199,7 +232,9 @@ public class ServiceTest {
             }
         }
         catch (RequestException e) {
-            db.close(false);
+            if (!db.isClosed()) {
+                db.close(false);
+            }
             e.printStackTrace();
         }
     }

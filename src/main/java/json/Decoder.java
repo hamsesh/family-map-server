@@ -6,6 +6,7 @@ import request.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.Normalizer;
 import java.util.Scanner;
 
 /**
@@ -70,6 +71,7 @@ public class Decoder {
     }
 
     public Location[] parseLocations(String jsonString) throws DecodeException {
+        String decomposed = Normalizer.normalize(jsonString, Normalizer.Form.NFC);
         Gson gson = new Gson();
         try {
             return gson.fromJson(jsonString, Location[].class);

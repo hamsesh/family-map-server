@@ -28,11 +28,11 @@ public class RegisterService extends Service {
      * @param request Register request decoded from json
      * @return the result of request
      */
-    public RegisterResult register(RegisterRequest request) {
+    public RegisterResult register(RegisterRequest request) throws DataAccessException {
         String token = generateAuthToken();
         String personID = UUID.randomUUID().toString();
+        Database db = new Database();
         try {
-            Database db = new Database();
             Connection conn = db.open(dbPath);
             UserDAO userDAO = new UserDAO(conn);
             User newUser = new User(request.getUsername(), request.getPassword(), request.getEmail(),
@@ -46,6 +46,7 @@ public class RegisterService extends Service {
             db.close(true);
         }
         catch (DataAccessException e) {
+            db.close(false);
             return new RegisterResult(null, null, null, false, e.getMessage());
         }
         return new RegisterResult(token, request.getUsername(), personID, true, null);

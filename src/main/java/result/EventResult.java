@@ -10,21 +10,24 @@ public class EventResult {
      */
     private Event[] data;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     private boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
-     * Create new EventResult and initialize data members
+     * Create EventResult and initialize data members
+     * @param data Array of events
+     * @param message Message generated on error
+     * @param success Status of request
      */
-    public EventResult() {
-        data = null;
-        success = false;
-        errorMessage = null;
+    public EventResult(Event[] data, String message, boolean success) {
+        this.data = data;
+        this.message = message;
+        this.success = success;
     }
 
     public Event[] getData() {
@@ -35,19 +38,19 @@ public class EventResult {
         this.data = data;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

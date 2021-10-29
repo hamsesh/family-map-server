@@ -319,7 +319,7 @@ public class ServiceTest {
 
         PersonService personService = new PersonService(TEST_DB_PATH);
         PersonResult personResult = personService.person("qor492048");
-        Person userSon = new Person("mn2c89", "michael_scott", "Abraham",
+        Person correctPerson = new Person("mn2c89", "michael_scott", "Abraham",
                 "Lincoln", "m", "ar5j92", null, null);
 
         db.open(TEST_DB_PATH);
@@ -330,7 +330,7 @@ public class ServiceTest {
         Assertions.assertTrue(personResult.isSuccess());
         Assertions.assertNull(personResult.getMessage());
         Assertions.assertEquals(personResult.getData().length, 1);
-        Assertions.assertEquals(personResult.getData()[0], userSon);
+        Assertions.assertEquals(personResult.getData()[0], correctPerson);
     }
 
     @Test
@@ -341,8 +341,6 @@ public class ServiceTest {
 
         PersonService personService = new PersonService(TEST_DB_PATH);
         PersonResult personResult = personService.person("INVALID");
-        Person userSon = new Person("mn2c89", "michael_scott", "Abraham",
-                "Lincoln", "m", "ar5j92", null, null);
 
         db.open(TEST_DB_PATH);
         db.clearTables();
@@ -352,5 +350,70 @@ public class ServiceTest {
         Assertions.assertFalse(personResult.isSuccess());
         Assertions.assertNotNull(personResult.getMessage());
         Assertions.assertNull(personResult.getData());
+    }
+
+    @Test
+    @DisplayName("Get person by ID")
+    public void testGetPersonByID() throws DataAccessException {
+        db.open(TEST_DB_PATH);
+        DAOTest.fill(db);
+
+        PersonIDService personIDService = new PersonIDService(TEST_DB_PATH);
+        PersonIDResult personIDResult = personIDService.personID("cme342018", "ar5j92");
+        Person correctPerson = new Person("ar5j92", "jim_halpert", "Old",
+                "McDonald", "m", null, null, null);
+
+        db.open(TEST_DB_PATH);
+        db.clearTables();
+        db.close(true);
+
+        Assertions.assertNotNull(personIDResult);
+        Assertions.assertTrue(personIDResult.isSuccess());
+        Assertions.assertNull(personIDResult.getMessage());
+        Assertions.assertNotNull(personIDResult.getPersonID());
+
+        Person foundPerson = new Person(personIDResult.getPersonID(), personIDResult.getAssociatedUsername(),
+                personIDResult.getFirstName(), personIDResult.getLastName(), personIDResult.getGender(),
+                personIDResult.getFatherID(), personIDResult.getMotherID(), personIDResult.getSpouseID());
+
+        Assertions.assertEquals(foundPerson, correctPerson);
+    }
+
+    @Test
+    @DisplayName("Get person by invalid ID")
+    public void testGetPersonByInvalidID() throws DataAccessException {
+        db.open(TEST_DB_PATH);
+        DAOTest.fill(db);
+
+        PersonIDService personIDService = new PersonIDService(TEST_DB_PATH);
+        PersonIDResult personIDResult = personIDService.personID("qor492048", "000000");
+
+        db.open(TEST_DB_PATH);
+        db.clearTables();
+        db.close(true);
+
+        Assertions.assertNotNull(personIDResult);
+        Assertions.assertFalse(personIDResult.isSuccess());
+        Assertions.assertNotNull(personIDResult.getMessage());
+        Assertions.assertNull(personIDResult.getPersonID());
+    }
+
+    @Test
+    @DisplayName("Get another user's person")
+    public void testGetOtherPerson() throws DataAccessException {
+        db.open(TEST_DB_PATH);
+        DAOTest.fill(db);
+
+        PersonIDService personIDService = new PersonIDService(TEST_DB_PATH);
+        PersonIDResult personIDResult = personIDService.personID("cme342018", "mn2c89");
+
+        db.open(TEST_DB_PATH);
+        db.clearTables();
+        db.close(true);
+
+        Assertions.assertNotNull(personIDResult);
+        Assertions.assertFalse(personIDResult.isSuccess());
+        Assertions.assertNotNull(personIDResult.getMessage());
+        Assertions.assertNull(personIDResult.getPersonID());
     }
 }

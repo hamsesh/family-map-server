@@ -33,9 +33,7 @@ public class Server {
         server.createContext("/clear", new ClearHandler());
         server.createContext("/fill", new FillHandler());
         server.createContext("/load", new LoadHandler());
-        //server.createContext("/person/*"); //FIXME: personID?
         server.createContext("/person", new PersonHandler());
-        //server.createContext("/event/*");
         server.createContext("/event", new EventHandler());
         server.createContext("/", new FileHandler());
 
@@ -47,6 +45,9 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: java Server.java <port number>");
+        }
         String portNumber = args[0];
         new Server().run(portNumber);
     }

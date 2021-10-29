@@ -23,7 +23,7 @@ public class PersonIDResult {
     /**
      * Person's gender (m or f)
      */
-    private char gender;
+    private String gender;
     /**
      * Associated fatherID (may be null)
      */
@@ -37,28 +37,53 @@ public class PersonIDResult {
      */
     private String spouseID;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     private boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
-     * Create new PersonIDResult and initialize data members
+     * Create new PersonIDResult with the following data members
+     * @param associatedUsername Username associated to the person
+     * @param personID The person's ID
+     * @param firstName The person's first name
+     * @param lastName The person's last name
+     * @param gender The person's gender
+     * @param fatherID The person's fatherID (may be null)
+     * @param motherID The person's motherID (may be null)
+     * @param spouseID The person's spouseID (may be null)
+     * @param message Message generated on error
+     * @param success Status of request
      */
-    public PersonIDResult() {
-        associatedUsername = null;
-        personID = null;
-        firstName = null;
-        lastName = null;
-        gender = '\0';
-        fatherID = null;
-        motherID = null;
-        spouseID = null;
-        success = false;
-        errorMessage = null;
+    public PersonIDResult(String associatedUsername, String personID, String firstName, String lastName,
+                          String gender, String fatherID, String motherID, String spouseID,
+                          String message, boolean success) {
+        this.associatedUsername = associatedUsername;
+        this.personID = personID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.fatherID = fatherID;
+        this.motherID = motherID;
+        this.spouseID = spouseID;
+        this.message = message;
+        this.success = success;
+    }
+
+    public PersonIDResult(String message, boolean success) {
+        this.associatedUsername = null;
+        this.personID = null;
+        this.firstName = null;
+        this.lastName = null;
+        this.gender = null;
+        this.fatherID = null;
+        this.motherID = null;
+        this.spouseID = null;
+        this.message = message;
+        this.success = success;
     }
 
     public String getAssociatedUsername() {
@@ -93,11 +118,11 @@ public class PersonIDResult {
         this.lastName = lastName;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -125,19 +150,19 @@ public class PersonIDResult {
         this.spouseID = spouseID;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

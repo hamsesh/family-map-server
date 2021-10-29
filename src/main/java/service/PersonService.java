@@ -30,15 +30,18 @@ public class PersonService extends Service {
             AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.open(dbPath));
             String username = authTokenDAO.validate(token);
             if (username == null) {
-                return new PersonResult(null, "Error: Authentication failed", false);
+                return new PersonResult(null, "Error: Unable to authenticate user", false);
             }
 
             PersonDAO personDAO = new PersonDAO(db.getConnection());
             Person[] persons = personDAO.getAllPersonsByUsername(username);
+            if (persons == null) {
+                return new PersonResult(null, "Error: Unable to find persons", false);
+            }
             return new PersonResult(persons, null, true);
         }
         catch (DataAccessException e) {
-            return new PersonResult(null, "Error: Authentication failed", false);
+            return new PersonResult(null, "Error: Unable to authenticate user", false);
         }
         finally {
             db.close(false);

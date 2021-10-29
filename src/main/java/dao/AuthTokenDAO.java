@@ -46,21 +46,25 @@ public class AuthTokenDAO {
 
     /**
      * Checks to see if token exists and matches the given user ID
-     * @param authToken AuthToken to validate
-     * @return true if token exists and matches the user ID
+     * @param token AuthToken string to validate
+     * @return username if token exists and matches the user ID, else returns null
      * @throws DataAccessException on database failure or invalid data
      */
-    public boolean validate(AuthToken authToken) throws DataAccessException {
-        String sql = "select auth_token, username from auth_tokens where auth_token = '" + authToken.getToken() + "'";
+    public String validate(String token) throws DataAccessException {
+        String sql = "select auth_token, username from auth_tokens where auth_token = '" + token + "'";
         ResultSet rs = null;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             rs = stmt.executeQuery();
             if (rs.next()) {
-                String token = rs.getString(1);
+                String foundToken = rs.getString(1);
                 String username = rs.getString(2);
-                return authToken.equals(new AuthToken(token, username));
+                if (token.equals(foundToken)) {
+                    return username;
+                }
+                return null;
             }
+            return null;
         }
         catch (SQLException e) {
             throw new DataAccessException("Unable to get user by given username");
@@ -74,7 +78,6 @@ public class AuthTokenDAO {
                 }
             }
         }
-        return false;
     }
 
     /**

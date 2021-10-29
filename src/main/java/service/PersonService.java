@@ -1,23 +1,47 @@
 package service;
 
+import dao.AuthTokenDAO;
+import dao.DataAccessException;
+import dao.Database;
+import dao.PersonDAO;
 import model.AuthToken;
+import model.Person;
 import result.PersonResult;
 
 /**
  * Performs person action
  */
-public class PersonService {
+public class PersonService extends Service {
     /**
      * Create new PersonService object
      */
-    public PersonService() {}
+    public PersonService(String dbPath) {
+        super(dbPath);
+    }
 
     /**
      * Get all persons associated with current user
      * @param token Authentication token for current user
      * @return the result of request containing array of persons
      */
-    PersonResult person(AuthToken token) {
-        return null;
+    public PersonResult person(String token) throws DataAccessException {
+        Database db = new Database();
+        try {
+            AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.open(dbPath));
+            String username = authTokenDAO.validate(token);
+            if (username == null) {
+                return new PersonResult(null, "Error: Authentication failed", false);
+            }
+
+            PersonDAO personDAO = new PersonDAO(db.getConnection());
+            Person[] persons = personDAO.getAllPersonsByUsername(username);
+            return new PersonResult(persons, null, true);
+        }
+        catch (DataAccessException e) {
+            return new PersonResult(null, "Error: Authentication failed", false);
+        }
+        finally {
+            db.close(false);
+        }
     }
 }

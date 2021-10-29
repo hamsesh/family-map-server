@@ -45,13 +45,12 @@ public class ServiceTest {
         User foundUser = userDAO.getUserByUsername("jimbob-77");
 
         AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
-        AuthToken token = new AuthToken(response.getAuthToken(), "jimbob-77");
-        boolean authenticateSuccess = authTokenDAO.validate(token);
+        String authUsername = authTokenDAO.validate(response.getAuthToken());
 
         db.close(false);
 
         Assertions.assertNotNull(foundUser);
-        Assertions.assertTrue(authenticateSuccess);
+        Assertions.assertEquals(authUsername, "jimbob-77");
     }
 
     @Test
@@ -59,19 +58,19 @@ public class ServiceTest {
     public void testFillTwoGenerations() throws DataAccessException {
         Connection conn = db.open(TEST_DB_PATH);
         UserDAO userDAO = new UserDAO(conn);
-        userDAO.insert(new User("jiminy-cricket", "password", "jiminy@test.com",
-                "Jiminy", "Cricket", "m", UUID.randomUUID().toString()));
+        userDAO.insert(new User("wallabee-cricket", "password", "wallabee@test.com",
+                "Wallabee", "Cricket", "m", UUID.randomUUID().toString()));
         db.close(true);
 
         try {
-            FillRequest fillRequest = new FillRequest("jiminy-cricket", 2);
+            FillRequest fillRequest = new FillRequest("wallabee-cricket", 2);
             FillService fillService = new FillService(TEST_DB_PATH);
             fillService.fill(fillRequest);
             conn = db.open(TEST_DB_PATH);
             PersonDAO personDAO = new PersonDAO(conn);
             EventDAO eventDAO = new EventDAO(conn);
-            Person[] familyTree = personDAO.getAllPersonsByUsername("jiminy-cricket");
-            Event[] familyEvents = eventDAO.getAllEventsByUsername("jiminy-cricket");
+            Person[] familyTree = personDAO.getAllPersonsByUsername("wallabee-cricket");
+            Event[] familyEvents = eventDAO.getAllEventsByUsername("wallabee-cricket");
 
             Person firstGen = personDAO.getPersonByID(familyTree[0].getPersonID());
             Person secondGen = personDAO.getPersonByID(firstGen.getMotherID());
@@ -121,7 +120,7 @@ public class ServiceTest {
                 }
             }
         }
-        catch (RequestException e) {
+        catch (Exception e) {
             db.close(false);
             e.printStackTrace();
         }
@@ -227,7 +226,7 @@ public class ServiceTest {
         User foundUser;
         Person foundPerson;
         Event foundEvent;
-        boolean validAuthToken;
+        String authUsername;
 
         db.open(TEST_DB_PATH);
         DAOTest.fill(db);
@@ -261,18 +260,18 @@ public class ServiceTest {
 
         AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
         try {
-            validAuthToken = authTokenDAO.validate(new AuthToken("cme342018", "jim_halpert"));
+            authUsername = authTokenDAO.validate("cme342018");
         }
         catch (DataAccessException e) {
             e.printStackTrace();
-            validAuthToken = true;
+            authUsername = null;
         }
         db.close(false);
 
         Assertions.assertNull(foundUser);
         Assertions.assertNull(foundPerson);
         Assertions.assertNull(foundEvent);
-        Assertions.assertFalse(validAuthToken);
+        Assertions.assertNull(authUsername);
     }
 
     @Test
@@ -310,5 +309,48 @@ public class ServiceTest {
 
         Assertions.assertFalse(result.isSuccess());
         Assertions.assertNotNull(result.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get persons with valid token")
+    public void testGetPersonsValidAuth() throws DataAccessException {
+        db.open(TEST_DB_PATH);
+        DAOTest.fill(db);
+
+        PersonService personService = new PersonService(TEST_DB_PATH);
+        PersonResult personResult = personService.person("qor492048");
+        Person userSon = new Person("mn2c89", "michael_scott", "Abraham",
+                "Lincoln", "m", "ar5j92", null, null);
+
+        db.open(TEST_DB_PATH);
+        db.clearTables();
+        db.close(true);
+
+        Assertions.assertNotNull(personResult);
+        Assertions.assertTrue(personResult.isSuccess());
+        Assertions.assertNull(personResult.getMessage());
+        Assertions.assertEquals(personResult.getData().length, 1);
+        Assertions.assertEquals(personResult.getData()[0], userSon);
+    }
+
+    @Test
+    @DisplayName("Get persons with invalid token")
+    public void testGetPersonsInvalidAuth() throws DataAccessException {
+        db.open(TEST_DB_PATH);
+        DAOTest.fill(db);
+
+        PersonService personService = new PersonService(TEST_DB_PATH);
+        PersonResult personResult = personService.person("INVALID");
+        Person userSon = new Person("mn2c89", "michael_scott", "Abraham",
+                "Lincoln", "m", "ar5j92", null, null);
+
+        db.open(TEST_DB_PATH);
+        db.clearTables();
+        db.close(true);
+
+        Assertions.assertNotNull(personResult);
+        Assertions.assertFalse(personResult.isSuccess());
+        Assertions.assertNotNull(personResult.getMessage());
+        Assertions.assertNull(personResult.getData());
     }
 }

@@ -418,7 +418,7 @@ public class DAOTest {
         User foundUser;
         Person foundPerson;
         Event foundEvent;
-        boolean validAuthToken;
+        String authTokenUsername;
 
         fill(db);
 
@@ -452,17 +452,17 @@ public class DAOTest {
 
         AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
         try {
-            validAuthToken = authTokenDAO.validate(new AuthToken("cme342018", "jim_halpert"));
+            authTokenUsername = authTokenDAO.validate("cme342018");
         }
         catch (DataAccessException e) {
             e.printStackTrace();
-            validAuthToken = true;
+            authTokenUsername = null;
         }
 
         Assertions.assertNull(foundUser);
         Assertions.assertNull(foundPerson);
         Assertions.assertNull(foundEvent);
-        Assertions.assertFalse(validAuthToken);
+        Assertions.assertNull(authTokenUsername);
     }
 
     // Fill tables with fake data

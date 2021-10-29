@@ -11,21 +11,23 @@ public class PersonResult {
      */
     private Person[] data;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     private boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
-     * Create new PersonResult and initialize data members
+     * @param data Array of persons
+     * @param message Message generated on error
+     * @param success Status of request
      */
-    public PersonResult() {
-        data = null;
-        success = false;
-        errorMessage = null;
+    public PersonResult(Person[] data, String message, boolean success) {
+        this.data = data;
+        this.message = message;
+        this.success = success;
     }
 
     public Person[] getData() {
@@ -36,19 +38,19 @@ public class PersonResult {
         this.data = data;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String errorMessage) {
+        this.message = errorMessage;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

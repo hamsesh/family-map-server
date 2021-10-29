@@ -82,7 +82,6 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 exchange.getRequestBody().close();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
                 writeResponseBody(exchange.getResponseBody(), jsonData);
-                exchange.getRequestBody().close();
                 exchange.getResponseBody().close();
             }
             else {

@@ -26,10 +26,13 @@ public class ClearHandler extends Handler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+                System.out.println("Clear request received");
                 ClearService service = new ClearService(DB_PATH);
                 ClearResult result = service.clear();
+
                 Encoder jsonEncoder = new Encoder();
                 String jsonData = jsonEncoder.encodeClear(result);
+
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 writeResponseBody(exchange.getResponseBody(), jsonData);
                 exchange.getRequestBody().close();

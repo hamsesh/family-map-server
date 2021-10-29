@@ -203,7 +203,7 @@ public class DAOTest {
     @Test
     @DisplayName("Delete persons by username")
     public void testDeletePersonsByUsername() throws DataAccessException {
-        fill(db.getConnection());
+        fill(db);
         PersonDAO personDAO = new PersonDAO(db.openWithForeignKey(TEST_DB_PATH));
         personDAO.deletePersonsByUsername("jim_halpert");
         db.close(true);
@@ -420,7 +420,7 @@ public class DAOTest {
         Event foundEvent;
         boolean validAuthToken;
 
-        fill(db.getConnection());
+        fill(db);
 
         db.open(TEST_DB_PATH);
         db.clearTables();
@@ -466,7 +466,7 @@ public class DAOTest {
     }
 
     // Fill tables with fake data
-    private void fill(Connection conn) throws DataAccessException {
+    public static void fill(Database db) throws DataAccessException {
         User newUser = new User("jim_halpert", "password", "jim@yahoo.com", "Jim",
                 "Halpert", "m", "ae4f59");
         User newUser2 = new User("michael_scott", "pazzword", "michael@yahoo.com",
@@ -482,10 +482,10 @@ public class DAOTest {
         AuthToken newToken = new AuthToken("cme342018", "jim_halpert");
         AuthToken newToken2 = new AuthToken("qor492048", "michael_scott");
 
-        UserDAO userDAO = new UserDAO(conn);
-        PersonDAO personDAO = new PersonDAO(conn);
-        EventDAO eventDAO = new EventDAO(conn);
-        AuthTokenDAO authTokenDAO = new AuthTokenDAO(conn);
+        UserDAO userDAO = new UserDAO(db.getConnection());
+        PersonDAO personDAO = new PersonDAO(db.getConnection());
+        EventDAO eventDAO = new EventDAO(db.getConnection());
+        AuthTokenDAO authTokenDAO = new AuthTokenDAO(db.getConnection());
 
         userDAO.insert(newUser);
         userDAO.insert(newUser2);

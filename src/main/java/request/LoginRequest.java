@@ -17,10 +17,12 @@ public class LoginRequest {
 
     /**
      * Create new LoginRequest and initialize data members
+     * @param username Login username
+     * @param password Login password
      */
-    public LoginRequest() {
-        username = null;
-        password = null;
+    public LoginRequest(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -43,5 +45,10 @@ public class LoginRequest {
             throw new RequestException("Password is empty!");
         }
         this.password = password;
+    }
+
+    public boolean isValidRequest() {
+        return this.username != null && !this.username.isEmpty() &&
+                this.password != null && !this.password.isEmpty();
     }
 }

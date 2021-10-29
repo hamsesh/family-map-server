@@ -2,7 +2,6 @@ package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import dao.DataAccessException;
 import json.*;
 import request.FillRequest;
 import request.RegisterRequest;
@@ -34,24 +33,22 @@ public class RegisterHandler extends Handler implements HttpHandler {
             if (exchange.getRequestMethod().equalsIgnoreCase("post")) {
                 System.out.println("Register request recieved: ");
                 String data = readInputStream(exchange.getRequestBody());
-                System.out.printf("%s%n", data);
 
                 Decoder jsonDecoder = new Decoder();
-                RegisterRequest request;
-                System.out.println("Decoding...");
-                request = jsonDecoder.decodeRegister(data);
-                System.out.println("Finished decoding!");
+                System.out.println("Decoding request...");
+                RegisterRequest request = jsonDecoder.decodeRegister(data);
+                System.out.println("Finished decoding");
 
                 if (!request.isValidRequest()) {
-                    System.out.println("Invalid request");
+                    System.out.println("Invalid register request");
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     exchange.getRequestBody().close();
                     throw new IOException("Error: Register request not valid");
                 }
-                System.out.println("Valid request");
+                System.out.println("Valid login request");
                 RegisterService registerService = new RegisterService(DB_PATH);
                 RegisterResult registerResult = registerService.register(request);
-                System.out.printf("Register process complete. Status: %s",
+                System.out.printf("Register process complete. Status: %s%n",
                         registerResult.isSuccess() ? "Success" : "Failure");
 
                 if (!registerResult.isSuccess()) {
@@ -70,6 +67,9 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 }
                 FillService fillService = new FillService(DB_PATH);
                 FillResult fillResult = fillService.fill(fillRequest);
+                System.out.printf("Fill process complete. Status: %s%n",
+                        fillResult.isSuccess() ? "Success" : "Failure");
+
                 if (!fillResult.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     exchange.getRequestBody().close();
@@ -78,11 +78,11 @@ public class RegisterHandler extends Handler implements HttpHandler {
                 }
 
                 Encoder jsonEncoder = new Encoder();
-                String resultData;
-                resultData = jsonEncoder.encodeRegister(registerResult);
+                String jsonData = jsonEncoder.encodeRegister(registerResult);
                 exchange.getRequestBody().close();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, resultData.length());
-                writeResponseBody(exchange.getResponseBody(), resultData);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, jsonData.length());
+                writeResponseBody(exchange.getResponseBody(), jsonData);
+                exchange.getRequestBody().close();
                 exchange.getResponseBody().close();
             }
             else {
@@ -97,7 +97,7 @@ public class RegisterHandler extends Handler implements HttpHandler {
             exchange.getRequestBody().close();
             exchange.getResponseBody().close();
         }
-        catch (IOException | DecodeException | RequestException e) {
+        catch (DecodeException | RequestException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             e.printStackTrace();
             exchange.getRequestBody().close();

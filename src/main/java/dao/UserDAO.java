@@ -24,18 +24,6 @@ public class UserDAO {
     }
 
     /**
-     * Validate the given username/password combination
-     * @param username User-entered username
-     * @param password User-entered password
-     * @return id of user matching the username and password, null if username and password don't match
-     * or if user doesn't exist
-     * @throws DataAccessException on invalid data or database failure
-     */
-    public String validate(String username, String password) throws DataAccessException {
-        return null;
-    }
-
-    /**
      * Add a user to the database
      * @param user User object with data
      * @throws DataAccessException on user already exists, invalid data, or database failure

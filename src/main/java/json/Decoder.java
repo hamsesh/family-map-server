@@ -34,7 +34,13 @@ public class Decoder {
      * @throws DecodeException on invalid json
      */
     public LoginRequest decodeLogin(String jsonString) throws DecodeException {
-        return null;
+        Gson gson = new Gson();
+        try {
+            return gson.fromJson(jsonString, LoginRequest.class);
+        }
+        catch (JsonSyntaxException e) {
+            throw new DecodeException(e.getMessage());
+        }
     }
 
     /**

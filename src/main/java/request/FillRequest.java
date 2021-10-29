@@ -23,6 +23,11 @@ public class FillRequest {
         this.generations = generations;
     }
 
+    public FillRequest(String username) {
+        this.username = username;
+        this.generations = 4;
+    }
+
     public final String getUsername() {
         return this.username;
     }
@@ -34,4 +39,5 @@ public class FillRequest {
     public boolean isValidRequest() {
         return generations >= 0 && !username.isEmpty();
     }
+
 }

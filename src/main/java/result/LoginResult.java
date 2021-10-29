@@ -17,23 +17,28 @@ public class LoginResult {
      */
     private String personID;
     /**
+     * Message generated on error
+     */
+    private String message;
+    /**
      * Status of request
      */
     private boolean success;
-    /**
-     * Message generated on error
-     */
-    private String errorMessage;
 
     /**
-     * Create new LoginResult and initialize data members
+     *
+     * @param authToken AuthToken genereated
+     * @param username Associated username
+     * @param personID Associated personID
+     * @param success Success status
+     * @param errorMessage Generated error message
      */
-    public LoginResult() {
-        authToken = null;
-        username = null;
-        personID = null;
-        success = false;
-        errorMessage = null;
+    public LoginResult(String authToken, String username, String personID, String errorMessage, boolean success) {
+        this.authToken = authToken;
+        this.username = username;
+        this.personID = personID;
+        this.message = errorMessage;
+        this.success = success;
     }
 
     public String getAuthToken() {
@@ -60,19 +65,19 @@ public class LoginResult {
         this.personID = personID;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

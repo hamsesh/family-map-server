@@ -7,17 +7,13 @@ import result.ClearResult;
 /**
  * Performs clear action
  */
-public class ClearService {
-    /**
-     * Path to the database
-     */
-    private final String dbPath;
+public class ClearService extends Service {
     /**
      * Create new ClearService object
      * @param dbPath Path to the database
      */
     public ClearService(String dbPath) {
-        this.dbPath = dbPath;
+        super(dbPath);
     }
 
     /**

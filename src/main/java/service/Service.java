@@ -7,8 +7,22 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Service {
+    /**
+     * Random number generator for auth tokens
+     */
     protected static final SecureRandom secureRandom = new SecureRandom();
+    /**
+     * Encoder for auth tokens
+     */
     protected static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
+    /**
+     * Path to database
+     */
+    protected final String dbPath;
+
+    public Service(String dbPath) {
+        this.dbPath = dbPath;
+    }
 
     protected static String generateAuthToken() {
         byte[] randomBytes = new byte[24];

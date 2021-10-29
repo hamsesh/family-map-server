@@ -20,11 +20,7 @@ import java.util.UUID;
 /**
  * Performs fill action
  */
-public class FillService {
-    /**
-     * Path to database
-     */
-    private final String dbPath;
+public class FillService extends Service {
     /**
      * Locations from json data file
      */
@@ -58,7 +54,7 @@ public class FillService {
      * Create new FillService object
      */
     public FillService(String dbPath) {
-        this.dbPath = dbPath;
+        super(dbPath);
         rng = new Random();
         numPersonsAdded = 0;
         numEventsAdded = 0;
@@ -101,17 +97,16 @@ public class FillService {
             // Recursively add parents with events
             addParents(userPerson, request.getGenerations(), birth, personDAO, eventDAO);
             db.close(true);
-            return new FillResult(userPerson.getPersonID(),
-                    "Successfully added " + numPersonsAdded + " persons and " +
+            return new FillResult("Successfully added " + numPersonsAdded + " persons and " +
                             numEventsAdded + " events to the database", true);
         }
         catch (DataAccessException e) {
             e.printStackTrace();
-            return new FillResult(null, "Error: Unable to access database", false);
+            return new FillResult("Error: " + e.getMessage(), false);
         }
         catch (IOException | DecodeException e) {
             e.printStackTrace();
-            return new FillResult(null, "Error: Unable to generate random data", false);
+            return new FillResult("Error: Unable to generate random data", false);
         }
     }
 

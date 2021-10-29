@@ -14,17 +14,13 @@ import java.util.UUID;
  * Performs register action
  */
 public class RegisterService extends Service {
-    /**
-     * Path to database
-     */
-    private final String dbPath;
 
     /**
      * Create new RegisterService object
      * @param dbPath Path to database
      */
     public RegisterService(String dbPath) {
-        this.dbPath = dbPath;
+        super(dbPath);
     }
 
     /**

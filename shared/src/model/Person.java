@@ -122,7 +122,8 @@ public class Person {
             return true;
         if (o == null)
             return false;
-        if (o instanceof Person oPerson) {
+        if (o.getClass() == Person.class) {
+            Person oPerson = (Person) o;
             return oPerson.getPersonID().equals(getPersonID()) &&
                     oPerson.getAssociatedUsername().equals(getAssociatedUsername()) &&
                     oPerson.getFirstName().equals(getFirstName()) &&

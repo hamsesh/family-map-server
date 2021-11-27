@@ -108,7 +108,8 @@ public class User {
             return true;
         if (o == null)
             return false;
-        if (o instanceof User oUser) {
+        if (o.getClass() == User.class) {
+            User oUser = (User) o;
             return oUser.getPersonID().equals(getPersonID()) &&
                     oUser.getUsername().equals(getUsername()) &&
                     oUser.getPassword().equals(getPassword()) &&

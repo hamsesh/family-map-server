@@ -1,5 +1,7 @@
 package model;
 
+import java.util.UUID;
+
 /**
  * An event in a person's life, containing type of event, location, year, and associated user
  */
@@ -121,7 +123,8 @@ public class Event {
             return true;
         if (o == null)
             return false;
-        if (o instanceof Event oEvent) {
+        if (o.getClass() == Event.class) {
+            Event oEvent = (Event) o;
             return oEvent.getEventID().equals(getEventID()) &&
                     oEvent.getUsername().equals(getUsername()) &&
                     oEvent.getPersonID().equals(getPersonID()) &&
@@ -135,5 +138,14 @@ public class Event {
         else {
             return false;
         }
+    }
+
+    /**
+     * Create hash code for use in hash map
+     * @return generated hash code
+     */
+    @Override
+    public int hashCode() {
+        return UUID.fromString(this.eventID).hashCode();
     }
 }

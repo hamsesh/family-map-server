@@ -42,7 +42,9 @@ public class AuthToken {
             return true;
         if (o == null)
             return false;
-        if (o instanceof AuthToken oAuthToken) {
+        AuthToken authToken = (AuthToken) o;
+        if (o.getClass() == AuthToken.class) {
+            AuthToken oAuthToken = (AuthToken) o;
             return oAuthToken.getToken().equals(getToken()) &&
                     oAuthToken.getUsername().equals(getUsername());
         }

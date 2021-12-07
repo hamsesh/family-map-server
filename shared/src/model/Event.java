@@ -1,11 +1,12 @@
 package model;
 
+import java.util.Locale;
 import java.util.UUID;
 
 /**
  * An event in a person's life, containing type of event, location, year, and associated user
  */
-public class Event {
+public class Event implements Comparable {
     /**
      * Unique ID of event
      */
@@ -147,5 +148,28 @@ public class Event {
     @Override
     public int hashCode() {
         return UUID.fromString(this.eventID).hashCode();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == this)
+            return 0;
+        if (o == null)
+            return 0;
+        if (o.getClass() == Event.class) {
+            Event oEvent = (Event) o;
+            if (this.year < oEvent.getYear()) {
+                return -1;
+            }
+            else if (this.year > oEvent.getYear()) {
+                return 1;
+            }
+            else {
+                return this.eventType.toLowerCase(Locale.ROOT).compareTo(oEvent.eventType.toLowerCase(Locale.ROOT));
+            }
+        }
+        else {
+            return 0;
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * An event in a person's life, containing type of event, location, year, and associated user
  */
-public class Event implements Comparable {
+public class Event implements Comparable<Event> {
     /**
      * Unique ID of event
      */
@@ -151,25 +151,33 @@ public class Event implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o == this)
+    public int compareTo(Event event) {
+        if (event == this)
             return 0;
-        if (o == null)
+        if (event == null)
             return 0;
-        if (o.getClass() == Event.class) {
-            Event oEvent = (Event) o;
-            if (this.year < oEvent.getYear()) {
-                return -1;
-            }
-            else if (this.year > oEvent.getYear()) {
-                return 1;
-            }
-            else {
-                return this.eventType.toLowerCase(Locale.ROOT).compareTo(oEvent.eventType.toLowerCase(Locale.ROOT));
-            }
+        if (this.eventType.equalsIgnoreCase("birth")) {
+            return -1;
+        }
+        else if (this.eventType.equalsIgnoreCase("death")) {
+            return 1;
+        }
+
+        if (event.eventType.equalsIgnoreCase("birth")) {
+            return 1;
+        }
+        else if (event.eventType.equalsIgnoreCase("death")) {
+            return -1;
+        }
+
+        if (this.year < event.getYear()) {
+            return -1;
+        }
+        else if (this.year > event.getYear()) {
+            return 1;
         }
         else {
-            return 0;
+            return this.eventType.toLowerCase(Locale.ROOT).compareTo(event.eventType.toLowerCase(Locale.ROOT));
         }
     }
 }

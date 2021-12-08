@@ -1,5 +1,7 @@
 package model;
 
+import java.util.UUID;
+
 /**
  * Person in the family map
  */
@@ -139,5 +141,10 @@ public class Person {
         else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return UUID.fromString(this.personID).hashCode();
     }
 }

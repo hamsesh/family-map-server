@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -178,6 +179,39 @@ public class Event implements Comparable<Event> {
         }
         else {
             return this.eventType.toLowerCase(Locale.ROOT).compareTo(event.eventType.toLowerCase(Locale.ROOT));
+        }
+    }
+
+    public static class EventComparator implements Comparator<Event> {
+        @Override
+        public int compare(Event o1, Event o2) {
+            if (o1 == o2)
+                return 0;
+            if (o1 == null || o2 == null)
+                return 0;
+            if (o1.eventType.equalsIgnoreCase("birth")) {
+                return -1;
+            }
+            else if (o1.eventType.equalsIgnoreCase("death")) {
+                return 1;
+            }
+
+            if (o2.eventType.equalsIgnoreCase("birth")) {
+                return 1;
+            }
+            else if (o2.eventType.equalsIgnoreCase("death")) {
+                return -1;
+            }
+
+            if (o1.year < o2.getYear()) {
+                return -1;
+            }
+            else if (o1.year > o2.getYear()) {
+                return 1;
+            }
+            else {
+                return o1.eventType.toLowerCase(Locale.ROOT).compareTo(o2.eventType.toLowerCase(Locale.ROOT));
+            }
         }
     }
 }
